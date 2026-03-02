@@ -518,6 +518,7 @@ final class EquipeController extends AbstractController
         $joinRequest->setEquipe($equipe);
         $joinRequest->setUser($user);
         $joinRequest->setStatus('pending');
+        $joinRequest->setCreatedBy($user);
 
         $entityManager->persist($joinRequest);
         $entityManager->flush();
@@ -563,9 +564,11 @@ final class EquipeController extends AbstractController
             } else {
                 $equipe->addMember($joinRequest->getUser());
                 $joinRequest->setStatus('accepted');
+                $joinRequest->setUpdatedBy($this->getUser());
             }
         } elseif ($action === 'reject') {
             $joinRequest->setStatus('rejected');
+            $joinRequest->setUpdatedBy($this->getUser());
         }
 
         $entityManager->flush();

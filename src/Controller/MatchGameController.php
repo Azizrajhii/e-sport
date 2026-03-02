@@ -110,7 +110,7 @@ final class MatchGameController extends AbstractController
     public function index(MatchGameRepository $matchGameRepository): Response
     {
         return $this->render('match_game/index.html.twig', [
-            'match_games' => $matchGameRepository->findAll(),
+            'match_games' => $matchGameRepository->findBy([], ['id' => 'DESC'], 200),
             'tournoi' => null,
             'classement' => [],
         ]);
@@ -120,7 +120,7 @@ final class MatchGameController extends AbstractController
     public function index2(MatchGameRepository $matchGameRepository): Response
     {
         return $this->render('match_game/MatchDashbored.html.twig', [
-            'match_games' => $matchGameRepository->findAll(),
+            'match_games' => $matchGameRepository->findBy([], ['id' => 'DESC'], 200),
         ]);
     }
 

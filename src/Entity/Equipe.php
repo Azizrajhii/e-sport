@@ -18,7 +18,7 @@ class Equipe
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "Le nom de l'équipe ne peut pas être vide.")]
     #[Assert\Length(max: 100, maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères.")]
-    private ?string $nom = null;
+    private string $nom = '';
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[Assert\Count(max: 5, maxMessage: "Une équipe ne peut pas avoir plus de {{ limit }} membres.")]
@@ -51,7 +51,7 @@ class Equipe
         return $this->id;
     }
 
-  public function getNom(): ?string
+  public function getNom(): string
 {
     return $this->nom;
 }

@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: MatchGameRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class MatchGame
 {
     #[ORM\Id]
@@ -31,14 +32,14 @@ class MatchGame
     #[Assert\NotNull(message: 'Veuillez sélectionner l\'équipe 2.')]
     private ?Equipe $equipe2 = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $scoreTeam1 = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $scoreTeam2 = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $statut = null;
+    private string $statut = 'scheduled';
 
     // 🔥 relation avec Tournoi
     #[ORM\ManyToOne(targetEntity: Tournoi::class, inversedBy: 'matchGames')]
@@ -53,7 +54,6 @@ class MatchGame
     private Collection $streams;
 public function __construct()
     {
-        $this->statut = 'scheduled';
         $this->streams = new ArrayCollection();
     }
 
@@ -69,10 +69,22 @@ public function __construct()
         return $this->dateMatch;
     }
 
+    /**
+     * @internal Prefer letting PrePersist handle default date.
+     *           Use this setter only for forms or match generation.
+     */
     public function setDateMatch(?\DateTimeInterface $dateMatch): self
     {
         $this->dateMatch = $dateMatch;
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        if ($this->dateMatch === null) {
+            $this->dateMatch = new \DateTime();
+        }
     }
 
     public function getEquipe1(): ?Equipe
@@ -119,7 +131,7 @@ public function __construct()
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): string
     {
         return $this->statut;
     }

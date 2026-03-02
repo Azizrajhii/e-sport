@@ -47,7 +47,7 @@ class EsportChatbotController extends AbstractController
 
         // Membres
         $membres = array_map(
-            fn($m) => $m->getNom() ?? $m->getEmail(),
+            fn($m) => $m->getNom(),
             $equipe->getMembers()->toArray()
         );
 
