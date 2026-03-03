@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Blog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -61,7 +62,7 @@ class BlogRepository extends ServiceEntityRepository
      */
     public function findTopRated(int $limit = 10): array
     {
-        return $this->createQueryBuilder('b')
+        $query = $this->createQueryBuilder('b')
             ->leftJoin('b.ratings', 'r')
             ->addSelect('AVG(r.value) as HIDDEN avg_rating')
             ->addSelect('COUNT(r.id) as HIDDEN rating_count')
@@ -70,8 +71,11 @@ class BlogRepository extends ServiceEntityRepository
             ->orderBy('avg_rating', 'DESC')
             ->addOrderBy('rating_count', 'DESC')
             ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $paginator = new Paginator($query, fetchJoinCollection: true);
+
+        return iterator_to_array($paginator);
     }
 
     /**
@@ -132,14 +136,17 @@ class BlogRepository extends ServiceEntityRepository
      */
     public function findMostRated(int $limit = 10): array
     {
-        return $this->createQueryBuilder('b')
+        $query = $this->createQueryBuilder('b')
             ->leftJoin('b.ratings', 'r')
             ->addSelect('COUNT(r.id) as HIDDEN rating_count')
             ->groupBy('b.id')
             ->orderBy('rating_count', 'DESC')
             ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $paginator = new Paginator($query, fetchJoinCollection: true);
+
+        return iterator_to_array($paginator);
     }
 
     /**

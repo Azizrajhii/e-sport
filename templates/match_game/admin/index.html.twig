@@ -112,6 +112,296 @@
         background: rgba(59, 130, 246, 0.1);
         color: #3b82f6;
     }
+
+    /* ═══════════════════════════════════════════
+       GENERATE MODAL — Modern Dark Glass Design
+       ═══════════════════════════════════════════ */
+
+    #generateModal .modal-dialog { max-width: 660px; }
+
+    #generateModal .modal-content {
+        background: linear-gradient(170deg, #0c1222 0%, #111827 50%, #0f172a 100%) !important;
+        border: 1px solid rgba(99, 102, 241, 0.12) !important;
+        border-radius: 20px !important;
+        color: #e2e8f0 !important;
+        box-shadow: 0 0 80px rgba(99, 102, 241, 0.06), 0 32px 64px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    /* Animated gradient bar at top */
+    #generateModal .modal-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.06) !important;
+        padding: 1.6rem 2rem 1.15rem;
+        position: relative;
+    }
+    #generateModal .modal-header::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa, #6366f1);
+        background-size: 200% auto;
+        animation: gradSlide 3s linear infinite;
+    }
+    @keyframes gradSlide {
+        0% { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
+
+    #generateModal .modal-title {
+        font-weight: 800; font-size: 1.1rem; color: #fff !important;
+        display: flex; align-items: center; gap: 12px; letter-spacing: -0.02em;
+    }
+    .gm-title-icon {
+        width: 40px; height: 40px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 0.95rem; color: #fff;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+    }
+    #generateModal .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+        opacity: 0.35; transition: all 0.3s;
+    }
+    #generateModal .btn-close:hover { opacity: 1; transform: rotate(90deg); }
+
+    #generateModal .modal-body { padding: 1.15rem 2rem 1.4rem; background: transparent; }
+
+    .gm-subtitle { color: #4b5563; font-size: 0.8rem; margin-bottom: 1.15rem; line-height: 1.5; }
+
+    #generateModal .modal-footer {
+        background: rgba(15, 23, 42, 0.35);
+        border-top: 1px solid rgba(99, 102, 241, 0.05) !important;
+        padding: 1.15rem 2rem;
+    }
+
+    /* ── Search ── */
+    .gm-search-wrap { position: relative; margin-bottom: 1.15rem; }
+    .gm-search-wrap .si {
+        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+        color: #374151; font-size: 0.8rem; pointer-events: none; transition: color 0.25s;
+    }
+    .gm-search-wrap:focus-within .si { color: #818cf8; }
+    .gm-search {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(99, 102, 241, 0.08) !important;
+        border-radius: 12px; color: #e2e8f0 !important;
+        padding: 0.72rem 1rem 0.72rem 2.65rem; width: 100%; font-size: 0.83rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gm-search:focus {
+        outline: none !important;
+        border-color: rgba(99, 102, 241, 0.35) !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06), 0 0 20px rgba(99, 102, 241, 0.04) !important;
+        background: rgba(15, 23, 42, 0.85) !important;
+    }
+    .gm-search::placeholder { color: #1f2937; }
+
+    /* ── Tournament list ── */
+    .gm-list { max-height: 340px; overflow-y: auto; padding-right: 4px; scroll-behavior: smooth; }
+    .gm-list::-webkit-scrollbar { width: 4px; }
+    .gm-list::-webkit-scrollbar-track { background: transparent; }
+    .gm-list::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.12); border-radius: 10px; }
+
+    /* ── Tournament card ── */
+    .tc {
+        position: relative;
+        background: rgba(15, 23, 42, 0.45);
+        border: 1px solid rgba(100, 116, 139, 0.06);
+        border-radius: 14px;
+        padding: 0.9rem 1.15rem;
+        margin-bottom: 0.45rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex; align-items: center; gap: 0.85rem;
+        overflow: hidden;
+    }
+    .tc::before {
+        content: ''; position: absolute; inset: 0; border-radius: 14px;
+        opacity: 0; transition: opacity 0.3s;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.03));
+    }
+    .tc:hover {
+        border-color: rgba(99, 102, 241, 0.15);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+    .tc:hover::before { opacity: 1; }
+
+    /* ── Selected glow ── */
+    .tc.active {
+        border-color: rgba(99, 102, 241, 0.45) !important;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.07), rgba(139, 92, 246, 0.04));
+        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.12),
+                    0 0 30px rgba(99, 102, 241, 0.06),
+                    0 10px 30px rgba(0, 0, 0, 0.18);
+        transform: translateY(-2px);
+    }
+    .tc.active::before { opacity: 1; }
+    /* Corner ribbon */
+    .tc.active::after {
+        content: '';
+        position: absolute; top: -1px; right: -1px;
+        width: 30px; height: 30px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        clip-path: polygon(100% 0, 0 0, 100% 100%);
+        border-radius: 0 13px 0 0;
+    }
+    .tc .corner-check {
+        position: absolute; top: 3px; right: 4px;
+        color: #fff; font-size: 0.45rem; z-index: 2;
+        opacity: 0; transform: scale(0);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .tc.active .corner-check { opacity: 1; transform: scale(1); }
+
+    /* Radio dot */
+    .tc .rd {
+        width: 18px; height: 18px;
+        border: 2px solid rgba(100, 116, 139, 0.15);
+        border-radius: 50%; flex-shrink: 0;
+        position: relative; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tc .rd::after {
+        content: ''; position: absolute; inset: 3px; border-radius: 50%;
+        background: transparent; transform: scale(0);
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .tc:hover .rd { border-color: rgba(99, 102, 241, 0.25); }
+    .tc.active .rd {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .tc.active .rd::after {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        transform: scale(1);
+    }
+
+    /* Card content */
+    .tc .tc-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+    .tc .tc-name {
+        font-weight: 700; color: #cbd5e1; font-size: 0.88rem;
+        margin-bottom: 0.3rem; transition: color 0.2s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tc.active .tc-name { color: #fff; }
+    .tc .tc-meta {
+        display: flex; flex-wrap: wrap; gap: 0.6rem;
+        font-size: 0.72rem; color: #374151;
+    }
+    .tc .tc-meta span { display: inline-flex; align-items: center; gap: 0.25rem; }
+    .tc .tc-meta i { font-size: 0.6rem; }
+    .tc.active .tc-meta { color: #4b5563; }
+
+    /* Match pill */
+    .tc .mpill {
+        position: relative; z-index: 1;
+        padding: 0.2rem 0.6rem; border-radius: 20px;
+        font-size: 0.65rem; font-weight: 600; white-space: nowrap;
+    }
+    .tc .mpill.has {
+        background: rgba(99, 102, 241, 0.08); color: #818cf8;
+        border: 1px solid rgba(99, 102, 241, 0.12);
+    }
+    .tc .mpill.none {
+        background: rgba(100, 116, 139, 0.06); color: #374151;
+        border: 1px solid rgba(100, 116, 139, 0.08);
+    }
+
+    /* ── Selection info panel ── */
+    .sp {
+        margin-top: 0.85rem;
+        background: rgba(99, 102, 241, 0.03);
+        border: 1px solid rgba(99, 102, 241, 0.08);
+        border-radius: 14px;
+        padding: 0.85rem 1.1rem;
+        display: none;
+        animation: spUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sp.show { display: block; }
+    @keyframes spUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .sp .sp-name {
+        font-size: 0.78rem; font-weight: 700; color: #a5b4fc;
+        margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .sp .sp-name i { font-size: 0.7rem; }
+    .sp .sp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .sp .sp-box {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(99, 102, 241, 0.05);
+        border-radius: 10px; padding: 0.55rem 0.7rem; text-align: center;
+    }
+    .sp .sp-box .sp-val {
+        font-size: 1.2rem; font-weight: 800;
+        background: linear-gradient(135deg, #6366f1, #a78bfa);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+    }
+    .sp .sp-box .sp-lbl { font-size: 0.62rem; color: #374151; font-weight: 500; margin-top: 0.1rem; }
+
+    /* Warning */
+    .gm-warn {
+        background: rgba(245, 158, 11, 0.04);
+        border: 1px solid rgba(245, 158, 11, 0.1);
+        border-radius: 10px; padding: 0.55rem 0.85rem;
+        font-size: 0.75rem; color: #fbbf24;
+        display: none; align-items: center; gap: 0.5rem;
+        margin-top: 0.65rem;
+        animation: spUp 0.3s ease;
+    }
+    .gm-warn i { font-size: 0.8rem; flex-shrink: 0; }
+
+    /* ── Footer buttons ── */
+    .btn-gm {
+        border: none !important; color: #fff !important;
+        font-weight: 600; padding: 0.55rem 1.4rem;
+        border-radius: 10px; font-size: 0.78rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative; overflow: hidden;
+    }
+    .btn-gm::before {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+        opacity: 0; transition: opacity 0.2s;
+    }
+    .btn-gm:hover:not(:disabled)::before { opacity: 1; }
+    .btn-gm.gen { background: linear-gradient(135deg, #10b981, #059669) !important; }
+    .btn-gm.gen:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+        color: #fff !important;
+    }
+    .btn-gm.regen { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+    .btn-gm.regen:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+        color: #fff !important;
+    }
+    .btn-gm:disabled { opacity: 0.2; cursor: not-allowed; filter: grayscale(0.6); }
+
+    @keyframes pulseReady {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.25); }
+        50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    }
+    .btn-gm.gen:not(:disabled) { animation: pulseReady 2s ease infinite; }
+    .btn-gm.gen:hover:not(:disabled) { animation: none; }
+
+    .btn-gm-cancel {
+        background: transparent !important;
+        border: 1px solid rgba(100, 116, 139, 0.12) !important;
+        color: #4b5563 !important;
+        font-weight: 500; padding: 0.55rem 1.15rem;
+        border-radius: 10px; font-size: 0.78rem; transition: all 0.2s;
+    }
+    .btn-gm-cancel:hover {
+        background: rgba(51, 65, 85, 0.2) !important;
+        color: #94a3b8 !important;
+    }
+
+    .modal-backdrop.show { backdrop-filter: blur(6px); }
 </style>
 {% endblock %}
 
@@ -121,9 +411,14 @@
         <div>
             <h1 class="page-title">Match Games Management</h1>
         </div>
-        <a href="{{ path('admin_match_game_new') }}" class="btn btn-primary">
-            <i class="fas fa-plus-circle me-2"></i>New Match
-        </a>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-gm gen" data-bs-toggle="modal" data-bs-target="#generateModal" style="animation:none;">
+                <i class="fas fa-wand-magic-sparkles me-2"></i>Générer Matchs
+            </button>
+            <a href="{{ path('admin_match_game_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>New Match
+            </a>
+        </div>
     </div>
     
     <div class="row mb-4">
@@ -243,4 +538,220 @@
         </div>
     </div>
 </div>
+
+{# ══════ Generate Matches Modal ══════ #}
+<div class="modal fade" id="generateModal" tabindex="-1" aria-labelledby="generateModalLabel" aria-hidden="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generateModalLabel">
+                    <span class="gm-title-icon"><i class="fas fa-wand-magic-sparkles"></i></span>
+                    Générer les Matchs
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="gm-subtitle">
+                    Sélectionnez un tournoi ci-dessous pour générer automatiquement tous les matchs round-robin.
+                </p>
+
+                {# Search #}
+                <div class="gm-search-wrap">
+                    <i class="fas fa-search si"></i>
+                    <input type="text" class="gm-search" id="gmSearch" placeholder="Rechercher un tournoi..." autocomplete="off">
+                </div>
+
+                {# Tournament list #}
+                <div class="gm-list">
+                    {% if tournois is empty %}
+                        <div style="text-align:center; padding: 2.5rem 0;">
+                            <div style="width:56px;height:56px;background:rgba(99,102,241,0.06);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+                                <i class="fas fa-trophy" style="color:#1e293b;font-size:1.1rem;"></i>
+                            </div>
+                            <p style="color:#374151;margin:0;font-size:0.82rem;">Aucun tournoi disponible</p>
+                        </div>
+                    {% else %}
+                        {% for tournoi in tournois %}
+                            {% set info = tournoi_info[tournoi.id] %}
+                            <div class="tc"
+                                 data-id="{{ tournoi.id }}"
+                                 data-name="{{ tournoi.nom }}"
+                                 data-equipes="{{ info.equipes_count }}"
+                                 data-matches="{{ info.matches_count }}"
+                                 data-jeu="{{ tournoi.jeu ? tournoi.jeu.nom : '' }}"
+                                 data-date="{{ tournoi.dateDebut ? tournoi.dateDebut|date('d/m/Y') : 'N/A' }}">
+                                <i class="fas fa-check corner-check"></i>
+                                <div class="rd"></div>
+                                <div class="tc-info">
+                                    <div class="tc-name">{{ tournoi.nom }}</div>
+                                    <div class="tc-meta">
+                                        <span><i class="fas fa-users"></i> {{ info.equipes_count }} équipe(s)</span>
+                                        <span><i class="fas fa-calendar"></i> {{ tournoi.dateDebut ? tournoi.dateDebut|date('d/m/Y') : 'N/A' }}</span>
+                                        {% if tournoi.jeu %}
+                                            <span><i class="fas fa-gamepad"></i> {{ tournoi.jeu.nom }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if info.matches_count > 0 %}
+                                    <span class="mpill has"><i class="fas fa-check-circle me-1"></i>{{ info.matches_count }} match(s)</span>
+                                {% else %}
+                                    <span class="mpill none">0 match</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {# Selection info panel #}
+                <div class="sp" id="gmPanel">
+                    <div class="sp-name">
+                        <i class="fas fa-trophy"></i>
+                        <span id="gmPanelName">—</span>
+                    </div>
+                    <div class="sp-grid">
+                        <div class="sp-box">
+                            <div class="sp-val" id="gmPanelTeams">0</div>
+                            <div class="sp-lbl">Équipes</div>
+                        </div>
+                        <div class="sp-box">
+                            <div class="sp-val" id="gmPanelMatches">0</div>
+                            <div class="sp-lbl">Matchs existants</div>
+                        </div>
+                        <div class="sp-box">
+                            <div class="sp-val" id="gmPanelExpected">0</div>
+                            <div class="sp-lbl">Matchs à générer</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Warning #}
+                <div class="gm-warn" id="gmWarn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="gmWarnText"></span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gm-cancel" data-bs-dismiss="modal">
+                    Annuler
+                </button>
+                <div class="d-flex gap-2 ms-auto">
+                    <form method="post" action="{{ path('admin_match_game_generate') }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('generate_matches') }}">
+                        <input type="hidden" name="tournoi_id" id="gmTournoiId" value="">
+                        <input type="hidden" name="mode" value="generate">
+                        <button type="submit" class="btn btn-gm gen" id="gmBtnGen" disabled>
+                            <i class="fas fa-wand-magic-sparkles me-1"></i> Générer
+                        </button>
+                    </form>
+                    <form method="post" action="{{ path('admin_match_game_generate') }}" class="d-inline"
+                          onsubmit="return confirm('⚠️ Cela supprimera tous les matchs existants et en générera de nouveaux. Continuer ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('generate_matches') }}">
+                        <input type="hidden" name="tournoi_id" id="gmTournoiIdRegen" value="">
+                        <input type="hidden" name="mode" value="regenerate">
+                        <button type="submit" class="btn btn-gm regen" id="gmBtnRegen" disabled>
+                            <i class="fas fa-arrows-rotate me-1"></i> Régénérer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Flash messages as toasts #}
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show position-fixed"
+             style="bottom: 1.5rem; right: 1.5rem; z-index: 9999; min-width: 320px; max-width: 480px;
+                    background: rgba({{ type == 'success' ? '16,185,129' : (type == 'warning' ? '245,158,11' : '239,68,68') }}, 0.14);
+                    border: 1px solid rgba({{ type == 'success' ? '16,185,129' : (type == 'warning' ? '245,158,11' : '239,68,68') }}, 0.3);
+                    color: {{ type == 'success' ? '#10b981' : (type == 'warning' ? '#fbbf24' : '#f87171') }};
+                    border-radius: var(--radius-sm); backdrop-filter: blur(10px);">
+            <i class="fas fa-{{ type == 'success' ? 'check-circle' : (type == 'warning' ? 'exclamation-triangle' : 'times-circle') }} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+(function() {
+    let activeCard = null;
+
+    // Click handler for tournament cards
+    document.querySelectorAll('.tc').forEach(card => {
+        card.addEventListener('click', () => selectTournoi(card));
+    });
+
+    function selectTournoi(el) {
+        // Deselect previous
+        if (activeCard) activeCard.classList.remove('active');
+
+        // Select new
+        el.classList.add('active');
+        activeCard = el;
+
+        const id      = el.dataset.id;
+        const name    = el.dataset.name;
+        const equipes = parseInt(el.dataset.equipes);
+        const matches = parseInt(el.dataset.matches);
+
+        // Fill hidden inputs
+        document.getElementById('gmTournoiId').value = id;
+        document.getElementById('gmTournoiIdRegen').value = id;
+
+        const hasEnough  = equipes >= 2;
+        const hasMatches = matches > 0;
+
+        // ── Selection info panel ──
+        const panel = document.getElementById('gmPanel');
+        panel.classList.add('show');
+        document.getElementById('gmPanelName').textContent = name;
+        document.getElementById('gmPanelTeams').textContent = equipes;
+        document.getElementById('gmPanelMatches').textContent = matches;
+        // Round-robin formula: n*(n-1)/2
+        const expected = hasEnough ? Math.floor(equipes * (equipes - 1) / 2) : 0;
+        document.getElementById('gmPanelExpected').textContent = expected;
+
+        // ── Warning ──
+        const warn = document.getElementById('gmWarn');
+        const warnText = document.getElementById('gmWarnText');
+        if (!hasEnough) {
+            warnText.textContent = 'Il faut au minimum 2 équipes inscrites. Ce tournoi en a ' + equipes + '.';
+            warn.style.display = 'flex';
+        } else if (hasMatches) {
+            warnText.textContent = 'Ce tournoi a déjà ' + matches + ' match(s). Utilisez « Régénérer » pour les remplacer.';
+            warn.style.display = 'flex';
+        } else {
+            warn.style.display = 'none';
+        }
+
+        // ── Buttons ──
+        document.getElementById('gmBtnGen').disabled   = !hasEnough || hasMatches;
+        document.getElementById('gmBtnRegen').disabled  = !hasEnough || !hasMatches;
+    }
+
+    // Search filter
+    document.getElementById('gmSearch').addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('.tc').forEach(el => {
+            const match = el.dataset.name.toLowerCase().includes(term)
+                       || (el.dataset.jeu && el.dataset.jeu.toLowerCase().includes(term));
+            el.style.display = match ? '' : 'none';
+        });
+    });
+
+    // Auto-dismiss flash toasts
+    document.querySelectorAll('.alert-dismissible').forEach(el => {
+        setTimeout(() => {
+            try { bootstrap.Alert.getOrCreateInstance(el).close(); } catch(e) {}
+        }, 5000);
+    });
+})();
+</script>
 {% endblock %}

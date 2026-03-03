@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -46,7 +47,7 @@ class ProductRepository extends ServiceEntityRepository
 
 public function findTopSales(int $limit = 3): array
 {
-    return $this->createQueryBuilder('p')
+    $query = $this->createQueryBuilder('p')
         ->select('p', 'SUM(oi.quantity) as HIDDEN totalSold')
         ->join('App\Entity\OrderItem', 'oi', 'WITH', 'oi.product = p')
         ->join('oi.order', 'o')
@@ -55,8 +56,11 @@ public function findTopSales(int $limit = 3): array
         ->groupBy('p.id')
         ->orderBy('totalSold', 'DESC')
         ->setMaxResults($limit)
-        ->getQuery()
-        ->getResult();
+        ->getQuery();
+
+    $paginator = new Paginator($query, fetchJoinCollection: true);
+
+    return iterator_to_array($paginator);
 }
 public function searchh(string $term): array
 {

@@ -1,0 +1,561 @@
+{% extends 'admin/dashboard.html.twig' %}
+
+{% block title %}Générer les Matchs - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .generate-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .generate-header .icon-box {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .tournoi-card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .tournoi-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .tournoi-card.selected {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.08);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+    }
+
+    .tournoi-card .radio-check {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        width: 24px;
+        height: 24px;
+        border: 2px solid rgba(148, 163, 184, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .tournoi-card.selected .radio-check {
+        border-color: var(--primary);
+        background: var(--primary);
+    }
+
+    .tournoi-card.selected .radio-check::after {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        color: #fff;
+        font-size: 0.7rem;
+    }
+
+    .tournoi-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .tournoi-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 0.75rem;
+    }
+
+    .tournoi-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.825rem;
+        color: #94a3b8;
+    }
+
+    .tournoi-meta .meta-item i {
+        width: 16px;
+        text-align: center;
+        color: var(--primary-light);
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-en-attente {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-en-cours {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-termine {
+        background: rgba(100, 116, 139, 0.15);
+        color: #94a3b8;
+        border: 1px solid rgba(100, 116, 139, 0.3);
+    }
+
+    .has-matches {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary-light);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        padding: 0.25rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .no-matches {
+        background: rgba(148, 163, 184, 0.1);
+        color: #94a3b8;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        padding: 0.25rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .action-panel {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        position: sticky;
+        top: 90px;
+    }
+
+    .action-panel h5 {
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .selected-info {
+        padding: 1rem;
+        background: rgba(99, 102, 241, 0.06);
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        border-radius: var(--radius-sm);
+        margin-bottom: 1rem;
+    }
+
+    .selected-info .info-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .selected-info .info-value {
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .btn-generate {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-sm);
+        width: 100%;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        color: #fff;
+    }
+
+    .btn-generate:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-regenerate {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-sm);
+        width: 100%;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-regenerate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        color: #fff;
+    }
+
+    .btn-regenerate:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .no-selection {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #64748b;
+    }
+
+    .no-selection i {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+        opacity: 0.4;
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-box input {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        border-radius: var(--radius-sm);
+        color: #e2e8f0;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .search-box input::placeholder {
+        color: #64748b;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+    }
+
+    .warning-box {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.825rem;
+        color: #fbbf24;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .warning-box i {
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #334155;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: #64748b;
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="generate-header">
+    <div class="icon-box">
+        <i class="fas fa-magic"></i>
+    </div>
+    <div>
+        <h1 class="page-title">Générer les Matchs</h1>
+        <p class="page-subtitle">Sélectionnez un tournoi pour générer automatiquement les matchs (round-robin)</p>
+    </div>
+</div>
+
+{# Flash messages #}
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" 
+             style="background: rgba({{ type == 'success' ? '16,185,129' : (type == 'warning' ? '245,158,11' : '239,68,68') }}, 0.12); 
+                    border: 1px solid rgba({{ type == 'success' ? '16,185,129' : (type == 'warning' ? '245,158,11' : '239,68,68') }}, 0.25);
+                    color: {{ type == 'success' ? '#10b981' : (type == 'warning' ? '#fbbf24' : '#f87171') }};
+                    border-radius: var(--radius-sm);">
+            <i class="fas fa-{{ type == 'success' ? 'check-circle' : (type == 'warning' ? 'exclamation-triangle' : 'times-circle') }} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    {# Left: tournament list #}
+    <div class="col-lg-8">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchTournoi" placeholder="Rechercher un tournoi...">
+        </div>
+
+        {% if tournois is empty %}
+            <div class="empty-state">
+                <i class="fas fa-trophy"></i>
+                <p>Aucun tournoi disponible.<br>Créez d'abord un tournoi pour pouvoir générer des matchs.</p>
+                <a href="{{ path('admin_tournoi_new') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus me-2"></i>Créer un tournoi
+                </a>
+            </div>
+        {% else %}
+            {% for tournoi in tournois %}
+                {% set info = tournoi_info[tournoi.id] %}
+                <div class="tournoi-card" 
+                     data-id="{{ tournoi.id }}"
+                     data-name="{{ tournoi.nom }}"
+                     data-equipes="{{ info.equipes_count }}"
+                     data-matches="{{ info.matches_count }}"
+                     data-statut="{{ tournoi.statut }}"
+                     onclick="selectTournoi(this)">
+                    <div class="radio-check"></div>
+                    <div class="d-flex align-items-start justify-content-between pe-4">
+                        <div>
+                            <div class="tournoi-name">{{ tournoi.nom }}</div>
+                            <span class="status-badge status-{{ tournoi.statut|lower|replace({' ': '-', 'é': 'e'}) }}">
+                                <i class="fas fa-circle" style="font-size: 6px;"></i>
+                                {{ tournoi.statut }}
+                            </span>
+                            {% if info.matches_count > 0 %}
+                                <span class="has-matches ms-2">
+                                    <i class="fas fa-gamepad me-1"></i>{{ info.matches_count }} match(s) existant(s)
+                                </span>
+                            {% else %}
+                                <span class="no-matches ms-2">
+                                    <i class="fas fa-minus-circle me-1"></i>Aucun match
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="tournoi-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span>{{ info.equipes_count }} équipe(s) inscrite(s)</span>
+                        </div>
+                        {% if tournoi.jeu %}
+                        <div class="meta-item">
+                            <i class="fas fa-gamepad"></i>
+                            <span>{{ tournoi.jeu.nom }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ tournoi.dateDebut ? tournoi.dateDebut|date('d/m/Y') : 'N/A' }}</span>
+                        </div>
+                        {% if tournoi.maxParticipants %}
+                        <div class="meta-item">
+                            <i class="fas fa-user-friends"></i>
+                            <span>Max: {{ tournoi.maxParticipants }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# Right: action panel #}
+    <div class="col-lg-4">
+        <div class="action-panel">
+            <h5><i class="fas fa-bolt me-2" style="color: var(--warning);"></i>Actions</h5>
+
+            <div id="noSelection">
+                <div class="no-selection">
+                    <i class="fas fa-hand-pointer"></i>
+                    <p>Sélectionnez un tournoi dans la liste pour voir les options de génération</p>
+                </div>
+            </div>
+
+            <div id="selectionPanel" style="display: none;">
+                <div class="selected-info">
+                    <div class="info-label">Tournoi sélectionné</div>
+                    <div class="info-value" id="selectedName">—</div>
+                </div>
+
+                <div class="selected-info">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="info-label">Équipes</div>
+                            <div class="info-value" id="selectedEquipes">0</div>
+                        </div>
+                        <div>
+                            <div class="info-label">Matchs existants</div>
+                            <div class="info-value" id="selectedMatches">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="warningNotEnough" class="warning-box" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Il faut au minimum <strong>2 équipes</strong> inscrites pour générer les matchs.</span>
+                </div>
+
+                {# Generate form #}
+                <form method="post" action="{{ path('admin_match_game_generate') }}" id="generateForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('generate_matches') }}">
+                    <input type="hidden" name="tournoi_id" id="tournoiIdInput" value="">
+                    <input type="hidden" name="mode" id="modeInput" value="generate">
+
+                    <button type="submit" class="btn btn-generate mb-2" id="btnGenerate" disabled>
+                        <i class="fas fa-magic"></i>
+                        <span>Générer les matchs</span>
+                    </button>
+                </form>
+
+                <form method="post" action="{{ path('admin_match_game_generate') }}" id="regenerateForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('generate_matches') }}">
+                    <input type="hidden" name="tournoi_id" id="tournoiIdInputRegen" value="">
+                    <input type="hidden" name="mode" value="regenerate">
+
+                    <button type="submit" class="btn btn-regenerate" id="btnRegenerate" disabled 
+                            onclick="return confirm('⚠️ Cela supprimera tous les matchs existants de ce tournoi et en générera de nouveaux. Continuer ?')">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Régénérer les matchs</span>
+                    </button>
+                </form>
+
+                <div id="regenHelp" class="mt-2" style="font-size: 0.8rem; color: #64748b; display: none;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    La régénération supprime les matchs existants et en crée de nouveaux.
+                </div>
+            </div>
+        </div>
+
+        {# Back link #}
+        <div class="mt-3 text-center">
+            <a href="{{ path('admin_match_game_index') }}" class="btn btn-outline" style="width: 100%;">
+                <i class="fas fa-arrow-left me-2"></i>Retour aux matchs
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    let selectedCard = null;
+
+    function selectTournoi(card) {
+        // Deselect previous
+        if (selectedCard) {
+            selectedCard.classList.remove('selected');
+        }
+
+        // Select new
+        card.classList.add('selected');
+        selectedCard = card;
+
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        const equipes = parseInt(card.dataset.equipes);
+        const matches = parseInt(card.dataset.matches);
+
+        // Update panel
+        document.getElementById('noSelection').style.display = 'none';
+        document.getElementById('selectionPanel').style.display = 'block';
+        document.getElementById('selectedName').textContent = name;
+        document.getElementById('selectedEquipes').textContent = equipes;
+        document.getElementById('selectedMatches').textContent = matches;
+
+        // Set form values
+        document.getElementById('tournoiIdInput').value = id;
+        document.getElementById('tournoiIdInputRegen').value = id;
+
+        const hasEnough = equipes >= 2;
+        const hasMatches = matches > 0;
+
+        // Warning
+        document.getElementById('warningNotEnough').style.display = hasEnough ? 'none' : 'flex';
+
+        // Generate button: enabled only if enough teams and no existing matches
+        const btnGen = document.getElementById('btnGenerate');
+        btnGen.disabled = !hasEnough || hasMatches;
+
+        // Regenerate button: enabled only if enough teams and has existing matches
+        const btnRegen = document.getElementById('btnRegenerate');
+        btnRegen.disabled = !hasEnough || !hasMatches;
+        document.getElementById('regenHelp').style.display = hasMatches ? 'block' : 'none';
+    }
+
+    // Search filter
+    document.getElementById('searchTournoi').addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('.tournoi-card').forEach(card => {
+            const name = card.dataset.name.toLowerCase();
+            card.style.display = name.includes(term) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

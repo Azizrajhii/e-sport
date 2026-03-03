@@ -41,7 +41,7 @@ class MatchGameRepository extends ServiceEntityRepository
     public function findByTournoi(Tournoi $tournoi): array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.Tournoi = :tournoi')
+            ->andWhere('m.tournoi = :tournoi')
             ->setParameter('tournoi', $tournoi)
             ->orderBy('m.dateMatch', 'ASC')
             ->getQuery()

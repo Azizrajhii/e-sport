@@ -45,7 +45,7 @@ class JeuStatsController extends AbstractController
                 // Matchs
                 $matchs = $entityManager->getRepository(\App\Entity\MatchGame::class)
                     ->createQueryBuilder('m')
-                    ->where('m.Tournoi = :tournoi')
+                    ->where('m.tournoi = :tournoi')
                     ->setParameter('tournoi', $tournoi)
                     ->getQuery()
                     ->getResult();
@@ -113,7 +113,7 @@ class JeuStatsController extends AbstractController
                 // Matchs
                 $matchs = $entityManager->getRepository(\App\Entity\MatchGame::class)
                     ->createQueryBuilder('m')
-                    ->where('m.Tournoi = :tournoi')
+                    ->where('m.tournoi = :tournoi')
                     ->setParameter('tournoi', $tournoi)
                     ->getQuery()
                     ->getResult();
