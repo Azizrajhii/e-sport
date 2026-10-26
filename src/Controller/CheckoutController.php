@@ -24,7 +24,7 @@ $user = $this->getUser();
 $cart = $this->cartService->getCart($user);
 
         if ($cart->getItems()->count() === 0) {
-            $this->addFlash('warning', 'Your cart is empty');
+            $this->addFlash('warning', 'Ton panier est vide');
             return $this->redirectToRoute('app_cart_index');
         }
 

@@ -14,6 +14,11 @@
         font-size: 0.95rem;
     }
 
+    .admin-form .tournoi-datetime-text {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        letter-spacing: 0.02em;
+    }
+
     .admin-form label {
         color: #e2e8f0;
         font-weight: 500;
@@ -56,6 +61,13 @@
         padding-left: 0;
         margin: 0.5rem 0 0 0;
     }
+
+    .admin-form .form-text,
+    .admin-form .help-text {
+        color: rgba(226, 232, 240, 0.65);
+        font-size: 0.85rem;
+        margin-top: 0.35rem;
+    }
 </style>
 
 {{ form_start(form, {'attr': {'class': 'admin-form', 'novalidate': 'novalidate'}}) }}
@@ -87,18 +99,21 @@
         <div class="form-group">
             {{ form_label(form.date_debut) }}
             {{ form_widget(form.date_debut) }}
+            {{ form_help(form.date_debut) }}
             {{ form_errors(form.date_debut) }}
         </div>
 
         <div class="form-group">
             {{ form_label(form.date_fin) }}
             {{ form_widget(form.date_fin) }}
+            {{ form_help(form.date_fin) }}
             {{ form_errors(form.date_fin) }}
         </div>
 
         <div class="form-group">
             {{ form_label(form.dateInscriptionLimite) }}
             {{ form_widget(form.dateInscriptionLimite) }}
+            {{ form_help(form.dateInscriptionLimite) }}
             {{ form_errors(form.dateInscriptionLimite) }}
         </div>
 

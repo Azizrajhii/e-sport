@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Team Created{% endblock %}
+{% block title %}Équipe créée — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -28,7 +28,7 @@
 
 .hero h1 {
     font-size: 3.2rem;
-    background: linear-gradient(90deg, #a855f7, #38bdf8);
+    background: linear-gradient(90deg, #a78bfa, #38bdf8);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -105,30 +105,30 @@
 <div class="team-created">
 
     <section class="hero">
-        <div class="badge-success">✔ Team Created</div>
+        <div class="badge-success">✔ Équipe créée</div>
         <h1>{{ team.nom }}</h1>
-        <p>Your squad is ready. Lead them to victory.</p>
+        <p>Ton équipe est prête. Mène-la à la victoire.</p>
     </section>
 
     <section class="actions">
         <div class="action-card">
             <span>👥</span>
-            <h3>Invite Players</h3>
-            <p>Recruit members to complete your roster</p>
+            <h3>Inviter des joueurs</h3>
+            <p>Recrute des membres pour compléter ton équipe</p>
             <a href="{{ path('app_equipe_membres', {id: team.id}) }}">Membres</a>
         </div>
 
         <div class="action-card">
             <span>⚙️</span>
-            <h3>Team Settings</h3>
+            <h3>Paramètres de l'équipe</h3>
             <p>Logo, privacy, roles</p>
             <a href="{{ path('app_equipe_edit', {id: team.id}) }}">Configure</a>
         </div>
 
         <div class="action-card">
             <span>🏆</span>
-            <h3>Join Tournament</h3>
-            <p>Register your team in competitions</p>
+            <h3>Rejoindre un tournoi</h3>
+            <p>Inscris ton équipe aux compétitions</p>
             <a href="{{ path('app_tournoi_index') }}">Explore</a>
         </div>
     </section>
@@ -136,16 +136,16 @@
     <section class="progress">
         <h2>Setup Progress</h2>
         <ul>
-            <li class="{{ team.nom ? 'done' : '' }}">Team created</li>
-            <li class="{{ team.getMaxMembers() > team.members|length ? '' : 'done' }}">Invite players</li>
+            <li class="{{ team.nom ? 'done' : '' }}">Équipe créée</li>
+            <li class="{{ team.getMaxMembers() > team.members|length ? '' : 'done' }}">Inviter des joueurs</li>
             <li>Select main game</li>
-            <li>Join first tournament</li>
+            <li>Rejoindre un premier tournoi</li>
         </ul>
     </section>
 
     <div class="cta">
         <a href="{{ path('app_equipe_dashboard', {id: team.id}) }}">
-            Go to Team Dashboard →
+            Aller au tableau de bord de l'équipe →
         </a>
     </div>
 

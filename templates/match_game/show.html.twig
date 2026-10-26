@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ match_game.equipe1.nom }} vs {{ match_game.equipe2.nom }} - Match Center{% endblock %}
+{% block title %}{{ match_game.equipe1.nom }} vs {{ match_game.equipe2.nom }} — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -8,14 +8,14 @@
    GLOBAL THEME
 =========================*/
 :root {
-    --bg: #020617;
+    --bg: #0b1020;
     --card: rgba(15, 23, 42, 0.6);
     --border: rgba(255, 255, 255, 0.08);
     --text: #e2e8f0;
     --muted: #94a3b8;
-    --primary: #3b82f6;
-    --accent: #ec4899;
-    --glow: rgba(59, 130, 246, 0.5);
+    --primary: #6366f1;
+    --accent: #22d3ee;
+    --match-glow: rgba(99, 102, 241, 0.5);
 }
 
 body {
@@ -46,9 +46,9 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
+    width: min(600px, 100%);
     height: 300px;
-    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.15), transparent 70%);
+    background: radial-gradient(ellipse, rgba(99, 102, 241, 0.15), transparent 70%);
     filter: blur(60px);
     z-index: -1;
 }
@@ -154,7 +154,7 @@ body {
     font-weight: 900;
     color: #fff;
     letter-spacing: 5px;
-    box-shadow: 0 0 50px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -259,11 +259,11 @@ body {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), #2563eb);
     color: #fff;
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
 }
 .btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 20px 35px -5px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 20px 35px -5px rgba(99, 102, 241, 0.5);
 }
 
 .btn-danger {
@@ -278,6 +278,8 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .team-block { min-width: 0; }
+    .team-avatar-lg { width: 110px; height: 110px; }
     .vs-container { flex-direction: column; gap: 30px; }
     .vs-divider { display: none; }
     .score-board { width: 100%; justify-content: space-around; }
@@ -290,12 +292,12 @@ body {
         <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
             <span class="tournament-badge">{{ match_game.tournoi.nom }}</span>
             {% if match_game.tournoi.jeu %}
-                <span class="tournament-badge" style="color:var(--primary); border-color:rgba(59,130,246,0.3);">
+                <span class="tournament-badge" style="color:var(--primary); border-color:rgba(99, 102, 241,0.3);">
                     <i class="fas fa-gamepad"></i> {{ match_game.tournoi.jeu.nom }}
                 </span>
             {% endif %}
         </div>
-        <h1 class="match-title">Match Overview</h1>
+        <h1 class="match-title">Résumé du match</h1>
     </div>
 
     <!-- VS DISPLAY -->
@@ -332,7 +334,7 @@ body {
     <div class="details-grid">
         <!-- Status -->
         <div class="detail-card">
-            <span class="detail-label">Status</span>
+            <span class="detail-label">Statut</span>
             <div class="detail-value">
                 {% if match_game.statut == 'Finished' %}
                     <span class="status-badge status-finished">Finished</span>
@@ -346,7 +348,7 @@ body {
 
         <!-- Date -->
         <div class="detail-card">
-            <span class="detail-label">Date & Time</span>
+            <span class="detail-label">Date et heure</span>
             <div class="detail-value">
                 <i class="far fa-calendar-alt" style="margin-right:8px; opacity:0.6"></i>
                 {{ match_game.dateMatch|date('d M Y') }}
@@ -356,7 +358,7 @@ body {
 
         <!-- Match ID -->
         <div class="detail-card">
-            <span class="detail-label">Match ID</span>
+            <span class="detail-label">Match n°</span>
             <div class="detail-value">#{{ match_game.id }}</div>
         </div>
 
@@ -377,11 +379,11 @@ body {
     <!-- ACTIONS -->
     <div class="actions-bar">
         <a href="{{ path('app_match_game_index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
+            <i class="fas fa-arrow-left"></i> Retour à la liste
         </a>
 
         <a href="{{ path('app_match_game_edit', {'id': match_game.id}) }}" class="btn btn-primary">
-            <i class="fas fa-edit"></i> Edit Match
+            <i class="fas fa-edit"></i> Modifier le match
         </a>
 
         {{ include('match_game/_delete_form.html.twig') }}

@@ -34,9 +34,8 @@ class RegistrationController extends AbstractController
                 $passwordHasher->hashPassword($user, $plainPassword)
             );
 
-            // Get role from form data
-            $role = $form->get('role')->getData();
-            $user->setRoles([$role ?? 'ROLE_USER']);
+            // Every new account is a regular player; admins are promoted with `bin/console app:promote-user`
+            $user->setRoles(['ROLE_USER']);
 
             // Save
             $em->persist($user);

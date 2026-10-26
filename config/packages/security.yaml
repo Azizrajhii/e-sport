@@ -38,6 +38,16 @@ security:
     # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
+        # Legacy management pages outside /admin: create / edit / delete and the back-office lists.
+        # Public pages (lists for players, /xxx/{id} detail pages) stay open; POST on /xxx/{id} is the delete action.
+        - { path: ^/(category|comment)(/|$), roles: ROLE_ADMIN }
+        - { path: ^/(product|blog)$, roles: ROLE_ADMIN }
+        - { path: ^/(product|blog|jeu|tournoi)/new$, roles: ROLE_ADMIN }
+        - { path: ^/(product|blog|jeu|tournoi)/\d+/edit$, roles: ROLE_ADMIN }
+        - { path: ^/(product|blog|jeu|tournoi)/\d+$, methods: [POST], roles: ROLE_ADMIN }
+        - { path: ^/match/game/(new|dashboard)$, roles: ROLE_ADMIN }
+        - { path: ^/match/game/\d+/edit$, roles: ROLE_ADMIN }
+        - { path: ^/match/game/\d+$, methods: [POST], roles: ROLE_ADMIN }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }

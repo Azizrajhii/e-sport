@@ -24,12 +24,10 @@ class Tournoi
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La date de début est obligatoire.')]
-    #[Assert\DateTime(message: 'La date de début doit être une date valide.')]
     private ?\DateTime $date_debut = null;
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La date de fin est obligatoire.')]
-    #[Assert\DateTime(message: 'La date de fin doit être une date valide.')]
     #[Assert\GreaterThan(propertyPath: 'date_debut', message: 'La date de fin doit être postérieure à la date de début.')]
     private ?\DateTime $date_fin = null;
 
@@ -63,7 +61,6 @@ class Tournoi
     private ?string $cagnotte = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    #[Assert\DateTime(message: 'La date limite d\'inscription doit être une date valide.')]
     private ?\DateTime $dateInscriptionLimite = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
@@ -84,6 +81,24 @@ class Tournoi
     {
         $this->equipes = new ArrayCollection();
         $this->matchGames = new ArrayCollection();
+    }
+
+    /**
+     * Remplit dates de début / fin et limite d'inscription pour un nouveau tournoi (formulaire admin ou public).
+     */
+    public function applyDefaultSchedule(): static
+    {
+        $debut = new \DateTime('tomorrow');
+        $debut->setTime(10, 0, 0);
+        $fin = (clone $debut)->modify('+7 days');
+        $fin->setTime(18, 0, 0);
+        $this->setDateDebut($debut);
+        $this->setDateFin($fin);
+        $inscription = (clone $debut)->modify('-1 day');
+        $inscription->setTime(23, 59, 59);
+        $this->setDateInscriptionLimite($inscription);
+
+        return $this;
     }
 
     public function getId(): ?int

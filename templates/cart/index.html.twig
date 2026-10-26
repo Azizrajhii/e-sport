@@ -1,24 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Panier - Gaming Store{% endblock %}
+{% block title %}Mon panier — e-Sports.tn{% endblock %}
 
 {% block body %}
 
 
 <!-- breadcrumb start-->
-<section class="breadcrumb breadcrumb_bg">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb_iner text-center">
-                    <div class="breadcrumb_iner_item">
-                        <h2>Shopping Cart</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Boutique', icon: 'fa-shopping-cart',
+    title: 'Mon panier',
+    subtitle: 'Vérifie tes articles avant de passer commande.',
+    image: 'img/web/setup-purple.jpg'
+}) }}
 
 <!-- Cart Section -->
 <div class="container py-5 cart-section-modern">
@@ -27,9 +20,9 @@
         <div class="row">
             <div class="col-12 text-center py-5">
                 <i class="fas fa-shopping-cart" style="font-size: 80px; color: #ccc;"></i>
-                <h3 class="mt-4">Your cart is empty</h3>
-                <p class="text-muted">Add some gaming gear to get started!</p>
-                <a href="{{ path('app_product_index2') }}" class="btn btn-primary mt-3">Continue Shopping</a>
+                <h3 class="mt-4">Ton panier est vide</h3>
+                <p class="text-muted">Ajoute du matos gaming pour commencer !</p>
+                <a href="{{ path('app_product_index2') }}" class="btn btn-primary mt-3">Continuer mes achats</a>
             </div>
         </div>
     {% else %}
@@ -73,7 +66,7 @@
             <!-- Order Summary -->
             <div class="col-lg-4 summary-column">
                 <div class="order-summary-box shadow-sm">
-                    <h4 class="fw-bold mb-4">Order Summary</h4>
+                    <h4 class="fw-bold mb-4">Récapitulatif</h4>
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal</span>
                         <span class="fw-bold" id="cart-subtotal">${{ total|number_format(2, '.', ',') }}</span>
@@ -83,10 +76,10 @@
                         <span class="fw-bold h5 mb-0">Total</span>
                         <span class="fw-bold h5 mb-0" id="cart-total">${{ total|number_format(2, '.', ',') }}</span>
                     </div>
-                    <button class="checkout-black-btn" onclick="window.location.href='{{ path('app_checkout') }}'">Checkout</button>
+                    <button class="checkout-black-btn" onclick="window.location.href='{{ path('app_checkout') }}'">Commander</button>
 
 
-                    <button class="btn btn-outline-danger w-100 mt-2" id="clear-cart-btn">Clear Cart</button>
+                    <button class="btn btn-outline-danger w-100 mt-2" id="clear-cart-btn">Vider le panier</button>
                 </div>
             </div>
         </div>
@@ -98,15 +91,16 @@
 /* --- Navbar & Cart Icon --- */
 /* --- Cart Layout --- */
 .cart-section-modern { 
-    background-color: #000000;
-    padding: 40px 0;
+    background-color: transparent;
+    padding-top: 40px;
+    padding-bottom: 40px;
     margin-top: 0;
     color: #ffffff; /* Add text color for all content */
 }
 
 .cart-row {
-    background: #1a1a1a; /* Darker background for rows */
-    border: 1px solid #333333;
+    background: linear-gradient(180deg, rgba(24, 34, 58, 0.85), rgba(18, 26, 46, 0.85)); /* Darker background for rows */
+    border: 1px solid rgba(148, 163, 184, 0.12);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
@@ -138,9 +132,9 @@
 }
 
 .order-summary-box {
-    background: #1a1a1a; /* Dark background for summary */
+    background: linear-gradient(180deg, rgba(24, 34, 58, 0.85), rgba(18, 26, 46, 0.85)); /* Dark background for summary */
     border-radius: 16px;
-    border: 1px solid #333333;
+    border: 1px solid rgba(148, 163, 184, 0.12);
     padding: 25px;
     position: sticky;
     top: 20px;
@@ -212,7 +206,7 @@
 
 /* --- Buttons --- */
 .checkout-black-btn {
-    background: #000;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
     color: #fff;
     width: 100%;
     padding: 15px;
@@ -225,7 +219,7 @@
 }
 
 .checkout-black-btn:hover {
-    background: #333;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
 }
 
 .btn-outline-danger {

@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
-{% block title %}Active Rosters · Esportify{% endblock %}
+{% block title %}Découvrir les équipes — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Équipes', icon: 'fa-compass',
+    title: 'Découvrir les équipes',
+    subtitle: equipes|length ~ ' équipes actives — rejoins celle qui te correspond.',
+    image: 'img/web/tournament-stage.jpg',
+    actions: app.user ? [{label: 'Créer une équipe', url: path('app_equipe_new'), icon: 'fa-plus'}] : []
+}) }}
 <style>
 /* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,7 +58,7 @@
     text-decoration: none;
     transition: all 0.2s;
 }
-.cart-icon:hover { border-color: #7c3aed; color: #7c3aed; }
+.cart-icon:hover { border-color: #8b5cf6; color: #8b5cf6; }
 
 /* ── Hero ── */
 .rosters-hero {
@@ -104,7 +111,7 @@
     margin-top: 4px;
 }
 .btn-add-team {
-    background: #7c3aed;
+    background: #8b5cf6;
     color: #fff;
     border: none;
     padding: 14px 28px;
@@ -117,12 +124,12 @@
     align-items: center;
     gap: 8px;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    box-shadow: 0 4px 20px rgba(139, 92, 246,0.4);
 }
 .btn-add-team:hover {
     background: #6d28d9;
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(124,58,237,0.55);
+    box-shadow: 0 8px 28px rgba(139, 92, 246,0.55);
     color: #fff;
 }
 
@@ -144,7 +151,7 @@
     padding: 12px 16px;
     transition: border-color 0.2s;
 }
-.search-wrap:focus-within { border-color: #7c3aed; }
+.search-wrap:focus-within { border-color: #8b5cf6; }
 .search-wrap svg { color: #4b5563; flex-shrink: 0; }
 .search-wrap input {
     background: none; border: none; outline: none;
@@ -163,7 +170,7 @@
     cursor: pointer;
     min-width: 140px;
 }
-.sort-select:focus { border-color: #7c3aed; }
+.sort-select:focus { border-color: #8b5cf6; }
 
 /* ── Grid ── */
 .rosters-grid {
@@ -190,9 +197,9 @@
     animation: fadeCard 0.4s ease both;
 }
 .roster-card:hover {
-    border-color: #7c3aed;
+    border-color: #8b5cf6;
     transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(124,58,237,0.12);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(139, 92, 246,0.12);
 }
 
 /* Rank badge */
@@ -215,7 +222,7 @@
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #a855f7, #6d28d9);
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa, #6d28d9);
     z-index: 0;
 }
 .rc-avatar {
@@ -261,9 +268,9 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: rgba(124,58,237,0.15);
+    background: rgba(139, 92, 246,0.15);
     color: #a78bfa;
-    border: 1px solid rgba(124,58,237,0.3);
+    border: 1px solid rgba(139, 92, 246,0.3);
     padding: 5px 12px;
     border-radius: 8px;
     font-size: 0.75rem;
@@ -272,7 +279,7 @@
     transition: all 0.2s;
 }
 .rc-qr-btn:hover {
-    background: rgba(124,58,237,0.3);
+    background: rgba(139, 92, 246,0.3);
     color: #c4b5fd;
 }
 
@@ -291,15 +298,15 @@
     transition: all 0.25s ease;
 }
 .rc-btn-join {
-    background: #7c3aed;
+    background: #8b5cf6;
     color: #fff;
-    box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+    box-shadow: 0 4px 16px rgba(139, 92, 246,0.4);
 }
 .rc-btn-join:hover {
     background: #6d28d9;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(124,58,237,0.5);
+    box-shadow: 0 8px 24px rgba(139, 92, 246,0.5);
 }
 .rc-btn-dash {
     background: rgba(34,197,94,0.1);
@@ -353,27 +360,11 @@
     .rosters-grid { grid-template-columns: 1fr; }
 }
 </style>
-
+<br>
+<br>
 <div class="rosters-page">
 
     {# ── Hero ── #}
-    <div class="rosters-hero">
-        <div class="hero-text">
-            <h1>Active Rosters</h1>
-            <p>Gérez et rejoignez les équipes esport</p>
-        </div>
-        <div class="hero-controls">
-            <div class="teams-counter">
-                <span class="num">{{ equipes|length }}</span>
-                <span class="lbl">Teams</span>
-            </div>
-            {% if app.user %}
-            <a href="{{ path('app_equipe_new') }}" class="btn-add-team">
-                + Ajouter equipe
-            </a>
-            {% endif %}
-        </div>
-    </div>
 
     {# ── Toolbar ── #}
     <div class="rosters-toolbar">

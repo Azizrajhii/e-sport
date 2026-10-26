@@ -69,7 +69,7 @@
                         </tr>
                         <tr>
                             <td class="text-muted">Cagnotte</td>
-                            <td>{{ tournoi.cagnotte ? (tournoi.cagnotte|float) ~ '€' : '—' }}</td>
+                            <td>{{ tournoi.cagnotte ? tournoi.cagnotte|number_format(2, ',', ' ') ~ ' €' : '—' }}</td>
                         </tr>
                         <tr>
                             <td class="text-muted">Frais d'inscription</td>

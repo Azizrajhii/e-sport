@@ -34,7 +34,7 @@ final class TournoiController extends AbstractController
     #[Route('/new', name: 'app_tournoi_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $tournoi = new Tournoi();
+        $tournoi = (new Tournoi())->applyDefaultSchedule();
         $form = $this->createForm(TournoiType::class, $tournoi);
         $form->handleRequest($request);
 

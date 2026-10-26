@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paiement - {{ tournoi.nom }}{% endblock %}
+{% block title %}Paiement · {{ tournoi.nom }} — e-Sports.tn{% endblock %}
 
 {% block body %}
 <section class="paiement-section">
@@ -94,13 +94,13 @@
     left: 0;
     right: 0;
     height: 200px;
-    background: radial-gradient(ellipse at 50% 0%, rgba(255,0,110,0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241,0.12) 0%, transparent 70%);
     pointer-events: none;
 }
 .paiement-card {
     max-width: 480px;
     margin: 0 auto;
-    background: #fff;
+    background: #121a2e;
     color: #1a1a2e;
     padding: 0;
     border-radius: 20px;
@@ -115,7 +115,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff006e, #8338ec);
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
 }
 .paiement-header {
     text-align: center;
@@ -125,7 +125,7 @@
     width: 56px;
     height: 56px;
     margin: 0 auto 16px;
-    background: linear-gradient(135deg, #ff006e, #8338ec);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -141,7 +141,7 @@
 .paiement-subtitle {
     margin: 0;
     font-size: 0.9rem;
-    color: #6b7280;
+    color: #94a3b8;
 }
 .secure-badge { font-size: 0.85em; }
 .paiement-resume {
@@ -161,7 +161,7 @@
 .resume-item:not(:last-child) { border-bottom: 1px solid #e2e8f0; }
 .resume-label { color: #64748b; font-weight: 500; }
 .resume-value { color: #1e293b; font-weight: 600; }
-.resume-total .resume-value { font-size: 1.25rem; color: #8338ec; }
+.resume-total .resume-value { font-size: 1.25rem; color: #8b5cf6; }
 .paiement-form {
     padding: 0 40px 40px;
 }
@@ -194,8 +194,8 @@
 }
 .form-control:focus {
     outline: none;
-    border-color: #8338ec;
-    box-shadow: 0 0 0 4px rgba(131,56,236,0.15);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246,0.15);
 }
 .form-control::placeholder { color: #94a3b8; }
 .form-control.invalid {
@@ -229,7 +229,7 @@
     letter-spacing: 0.5px;
 }
 .card-badge.visa { background: #1a1f71; color: #fff; }
-.card-badge.mc { background: #eb001b; color: #fff; }
+.card-badge.mc { background: #0f1529; color: #fff; }
 .form-actions {
     display: flex;
     gap: 14px;
@@ -249,16 +249,16 @@
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn-primary {
-    background: linear-gradient(135deg, #ff006e, #8338ec);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color: #fff;
-    box-shadow: 0 4px 20px rgba(131,56,236,0.35);
+    box-shadow: 0 4px 20px rgba(139, 92, 246,0.35);
 }
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(131,56,236,0.45);
+    box-shadow: 0 8px 30px rgba(139, 92, 246,0.45);
 }
 .btn-secondary {
-    background: #f1f5f9;
+    background: #0f1529;
     color: #475569;
     border: 2px solid #e2e8f0;
 }

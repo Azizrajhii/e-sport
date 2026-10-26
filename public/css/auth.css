@@ -1,0 +1,118 @@
+/* Login / register screens: same palette as the site theme (theme.css is loaded first). */
+
+body {
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--text);
+    background:
+        radial-gradient(900px 500px at 0% 0%, rgba(99, 102, 241, 0.25), transparent 60%),
+        radial-gradient(800px 500px at 100% 100%, rgba(34, 211, 238, 0.14), transparent 60%),
+        var(--bg) !important;
+}
+
+.main-wrapper { min-height: 100vh; height: auto !important; padding: 2rem 1rem; position: relative; overflow: hidden; }
+
+.main-wrapper::before,
+.main-wrapper::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    animation: auth-orb 12s ease-in-out infinite alternate;
+}
+.main-wrapper::before { width: 380px; height: 380px; background: rgba(99, 102, 241, 0.45); top: -80px; left: -60px; }
+.main-wrapper::after { width: 300px; height: 300px; background: rgba(34, 211, 238, 0.25); bottom: -60px; right: -40px; animation-delay: -5s; }
+@keyframes auth-orb { to { transform: translate(60px, 40px) scale(1.15); } }
+
+.register-box {
+    position: relative;
+    width: min(960px, 100%) !important;
+    background: rgba(18, 26, 46, 0.85) !important;
+    border: 1px solid var(--border);
+    border-radius: 24px !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5) !important;
+}
+
+.register-box:hover { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.35), 0 0 60px rgba(99, 102, 241, 0.2) !important; }
+
+.left-img { position: relative; background-image: var(--auth-img) !important; }
+.left-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(99, 102, 241, 0.35), rgba(11, 16, 32, 0.15) 50%, rgba(11, 16, 32, 0.85));
+}
+
+.right-form { padding: clamp(2rem, 5vw, 3.25rem) !important; }
+
+.auth-brand { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; text-decoration: none; }
+.auth-brand:hover { color: #fff; }
+.auth-brand img { height: 36px; }
+.auth-brand b { background: var(--grad-accent); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.right-form h2 { color: #fff; font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin-bottom: 1.75rem !important; }
+
+.right-form .form-control,
+.right-form .form-select,
+.right-form select {
+    background-color: rgba(11, 16, 32, 0.6) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 12px !important;
+    color: var(--text) !important;
+    padding: 0.75rem 1rem;
+}
+
+.right-form .form-control:focus,
+.right-form .form-select:focus,
+.right-form select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2) !important;
+    padding-left: 1rem;
+}
+
+.right-form .form-select, .right-form select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.9rem center !important;
+    background-size: 14px 10px !important;
+}
+
+.right-form .form-control::placeholder { color: var(--muted-2); }
+.right-form label { color: var(--muted); }
+
+.login-btn, .register-btn {
+    background: var(--grad) !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    padding: 0.85rem !important;
+    font-weight: 600;
+    color: #fff !important;
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+}
+
+.login-btn:hover, .register-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(99, 102, 241, 0.5) !important; }
+
+.register-link, .login-link { color: var(--primary-light) !important; }
+.register-link:hover, .login-link:hover { color: var(--accent) !important; }
+
+.right-form hr { border-color: var(--border); opacity: 1; }
+.right-form p, .right-form small, .right-form .text-muted { color: var(--muted) !important; }
+
+.btn-google, .google-btn, .right-form a[href*="google"] {
+    background: rgba(148, 163, 184, 0.08) !important;
+    border: 1px solid var(--border-strong) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+}
+
+.btn-google:hover, .google-btn:hover, .right-form a[href*="google"]:hover { border-color: var(--primary) !important; background: rgba(99, 102, 241, 0.15) !important; }
+
+.right-form .alert { border-radius: 12px; }
+
+@media (max-width: 767.98px) {
+    .register-box { flex-direction: column; }
+    .left-img { width: 100% !important; height: 180px; }
+    .right-form { width: 100% !important; }
+}

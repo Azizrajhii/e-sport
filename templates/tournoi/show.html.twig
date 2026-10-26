@@ -2,42 +2,51 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ tournoi.nom }} - e-Sports{% endblock %}
+{% block title %}{{ tournoi.nom }} — e-Sports.tn{% endblock %}
 
 {% block body %}
-<section class="tournament-detail">
+{# normaliser statut en slug #}
+{% set raw = tournoi.statut|default('') %}
+{% set slug = raw|lower
+    |replace({' ':'_','É':'e','é':'e','è':'e','ê':'e','à':'a','á':'a','â':'a','ù':'u','û':'u','ç':'c'}) %}
+{% if slug matches '/termin.*/' %}{% set slug = 'termine' %}{% endif %}
+{% set canRegister = slug not in ['en_cours','encours','termine'] %}
+{% set current = tournoi.equipes ? tournoi.equipes|length : 0 %}
+{% set max = tournoi.maxParticipants ?: 0 %}
+
+<section class="page-hero t-hero" style="--hero-img: url('{{ asset(tournoi.jeu and tournoi.jeu.image ? tournoi.jeu.image : 'img/web/tournament-stage.jpg') }}')">
     <div class="container">
-        <div class="tournament-detail-header">
-            <div class="tournament-detail-left">
-                <h1>{{ tournoi.nom }}</h1>
-                <p class="game-badge">{{ tournoi.jeu.nom }}</p>
-                <span class="status status-{{ tournoi.statut }}">{{ tournoi.statut }}</span>
-            </div>
-            <div class="tournament-detail-right">
-                <div class="cta-button">
-                    {# normaliser statut en slug #}
-                    {% set raw = tournoi.statut|default('') %}
-                    {% set slug = raw|lower
-                        |replace({' ':'_','É':'e','é':'e','è':'e','ê':'e','à':'a','á':'a','â':'a','ù':'u','û':'u','ç':'c'}) %}
-                    {% if slug matches '/termin.*/' %}{% set slug = 'termine' %}{% endif %}
-
-                    {% set canRegister = slug not in ['en_cours','encours','termine'] %}
-                    {% if canRegister %}
-                        <a href="{{ path('app_tournoi_register', {'id': tournoi.id}) }}" class="btn-details">S'inscrire</a>
-                    {% else %}
-                        <button class="btn-details disabled" disabled>
-                            {% if slug == 'en_cours' %}Tournoi en cours{% else %}Inscriptions fermées{% endif %}
-                        </button>
-                    {% endif %}
-
-                    {% set current = tournoi.equipes ? tournoi.equipes|length : 0 %}
-                    {% set max = tournoi.maxParticipants ?: 0 %}
-                    <p class="places">Places disponibles: {{ max > 0 ? (max - current) : '—' }}</p>
+        <div class="page-hero__inner">
+            <div>
+                <span class="eyebrow"><i class="fas fa-gamepad"></i> {{ tournoi.jeu ? tournoi.jeu.nom : 'Multi-jeux' }} · {{ tournoi.type }}</span>
+                <h1 class="text-shine">{{ tournoi.nom }}</h1>
+                <div class="t-hero__chips">
+                    <span class="badge {{ slug in ['en_cours','encours'] ? 'status-live' : (slug == 'termine' ? 'bg-secondary' : 'bg-warning') }}">{{ tournoi.statut }}</span>
+                    <span class="t-chip"><i class="far fa-calendar"></i> {{ tournoi.dateDebut|date('d/m/Y') }} → {{ tournoi.dateFin|date('d/m/Y') }}</span>
+                    {% if tournoi.cagnotte %}<span class="t-chip"><i class="fas fa-coins"></i> {{ tournoi.cagnotte|number_format(0, ',', ' ') }} € de cash prize</span>{% endif %}
+                    <span class="t-chip"><i class="fas fa-users"></i> {{ current }} / {{ max > 0 ? max : '∞' }} équipes</span>
                 </div>
+            </div>
+            <div class="page-hero__actions t-hero__cta">
+                {% if canRegister %}
+                    <a href="{{ path('app_tournoi_register', {'id': tournoi.id}) }}" class="btn btn-primary"><i class="fas fa-user-plus mr-2"></i>S'inscrire</a>
+                {% else %}
+                    <span class="btn btn-outline-light disabled" aria-disabled="true">{% if slug == 'termine' %}Inscriptions fermées{% else %}Tournoi en cours{% endif %}</span>
+                {% endif %}
+                <a href="{{ path('app_match_game_by_tournoi', {'tournoiId': tournoi.id}) }}" class="btn btn-outline-light"><i class="fas fa-bolt mr-2"></i>Matchs &amp; classement</a>
+                <p class="places w-100 mb-0">Places disponibles : {{ max > 0 ? (max - current) : '—' }}</p>
             </div>
         </div>
     </div>
 </section>
+<style>
+    .t-hero__chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .t-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: rgba(11, 16, 32, 0.6); border: 1px solid var(--border); color: var(--text); font-size: 0.85rem; backdrop-filter: blur(6px); }
+    .t-chip i { color: var(--primary-light); }
+    .t-hero__cta { flex-direction: row; align-items: center; max-width: 420px; justify-content: flex-end; }
+    .t-hero__cta .places { color: var(--muted); font-size: 0.85rem; text-align: right; }
+    .status-live { background: rgba(239, 68, 68, 0.2) !important; color: #fecaca !important; }
+</style>
 
 <section class="tournament-info">
     <div class="container">
@@ -84,7 +93,7 @@
 
             <div class="info-card">
                 <h4>Prize Pool</h4>
-                <p class="amount">{{ tournoi.cagnotte is not null ? (tournoi.cagnotte|float) : '0' }}€</p>
+                <p class="amount">{{ tournoi.cagnotte is not null ? tournoi.cagnotte|number_format(2, ',', ' ') ~ ' €' : '0 €' }}</p>
                 {% if tournoi.fraisInscription %}
                     <p class="fee">Frais: {{ tournoi.fraisInscription }}€</p>
                 {% endif %}
@@ -143,7 +152,7 @@
 
 <style>
     .tournament-detail {
-        background: linear-gradient(135deg, #ff006e, #8338ec, #3a0f5c);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6, #3a0f5c);
         padding: 80px 20px;
         color: white;
     }
@@ -200,7 +209,7 @@
     .btn-details {
         display: inline-block;
         background: white;
-        color: #ff006e;
+        color: #6366f1;
         padding: 15px 50px;
         border-radius: 30px;
         text-decoration: none;
@@ -248,7 +257,7 @@
 
     .info-card h4 {
         margin: 0 0 15px 0;
-        color: #ff006e;
+        color: #6366f1;
     }
 
     .info-card p {
@@ -277,7 +286,7 @@
 
     .progress {
         height: 100%;
-        background: linear-gradient(90deg, #ff006e, #8338ec);
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
         transition: width 0.3s ease;
     }
 
@@ -300,7 +309,7 @@
     .detail-section h3 {
         font-size: 1.5em;
         margin-bottom: 15px;
-        color: #ff006e;
+        color: #6366f1;
     }
 
     .detail-section p {
@@ -320,11 +329,11 @@
 
     .registration-card h3 {
         margin-top: 0;
-        color: #ff006e;
+        color: #6366f1;
     }
 
     .price-box {
-        background: rgba(255, 0, 110, 0.1);
+        background: rgba(99, 102, 241, 0.1);
         border-radius: 10px;
         padding: 15px;
         margin: 20px 0;
@@ -341,7 +350,7 @@
         display: block;
         font-size: 2em;
         font-weight: bold;
-        color: #ff006e;
+        color: #6366f1;
     }
 
     .features {
@@ -365,7 +374,7 @@
     .btn-details-large {
         display: inline-block;
         width: 100%;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
         padding: 15px;
         border-radius: 10px;
@@ -382,7 +391,7 @@
 
     .btn-details-large:hover {
         transform: scale(1.02);
-        box-shadow: 0 15px 35px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
     }
 
     @media (max-width: 768px) {

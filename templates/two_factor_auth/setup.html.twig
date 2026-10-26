@@ -11,7 +11,7 @@
 }
 
 body{
-    background: linear-gradient(90deg,#b8325b,#0b4fa3);
+    background: transparent;
 }
 
 .main-wrapper{
@@ -24,7 +24,8 @@ body{
 
 .register-box{
     width:600px;
-    background:white;
+    max-width:100%;
+    background:#121a2e;
     border-radius:6px;
     padding:40px;
     box-shadow:0 0 30px rgba(0,0,0,.3);
@@ -49,7 +50,7 @@ h2{
 }
 
 .secret-key{
-    background:#f8f9fa;
+    background:#0f1529;
     padding:15px;
     border-radius:4px;
     text-align:center;
@@ -67,12 +68,12 @@ h2{
 
 .form-control:focus{
     box-shadow:none;
-    border-color:#635bff;
+    border-color:#6366f1;
     padding-left:8px;
 }
 
 .btn-primary{
-    background:linear-gradient(90deg,#635bff,#a52bf9);
+    background:linear-gradient(90deg,#6366f1,#a52bf9);
     border:none;
     padding:12px 30px;
     border-radius:4px;
@@ -81,7 +82,7 @@ h2{
 
 .btn-primary:hover{
     transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(99,91,255,.4);
+    box-shadow:0 10px 20px rgba(99, 102, 241,.4);
 }
 
 .alert{
@@ -93,7 +94,7 @@ h2{
     text-align:center;
     margin-top:20px;
     display:block;
-    color:#635bff;
+    color:#6366f1;
     text-decoration:none;
 }
 </style>
@@ -102,7 +103,7 @@ h2{
 
 <div class="register-box">
 
-    <h2>Setup Two-Factor Authentication</h2>
+    <h2>Activer l'authentification à deux facteurs</h2>
 
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
@@ -112,26 +113,26 @@ h2{
         <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
 
-    <p class="text-center">Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)</p>
+    <p class="text-center">Scanne ce QR code avec ton application d'authentification (Google Authenticator, Authy…)</p>
 
     <div class="qr-code-container">
         {% if qrCodeImage %}
-            <img src="{{ qrCodeImage }}" alt="QR Code">
+            <img src="{{ qrCodeImage }}" alt="QR Code" style="background:white; padding:12px; border-radius:12px;">
         {% else %}
             <div class="alert alert-warning">
-                <p>QR Code could not be generated. Please use the manual secret key below.</p>
+                <p>Le QR code n'a pas pu être généré. Utilise la clé secrète ci-dessous.</p>
             </div>
         {% endif %}
     </div>
 
-    <p class="text-center text-muted">Or enter this secret key manually:</p>
+    <p class="text-center text-muted">Ou entre cette clé manuellement :</p>
     <div class="secret-key">{{ secret }}</div>
 
     <form method="post" action="{{ path('app_2fa_setup') }}">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('2fa_setup') }}">
         
         <div class="mb-3">
-            <label for="2fa_code" class="form-label">Enter verification code</label>
+            <label for="2fa_code" class="form-label">Code de vérification</label>
             <input type="text" 
                    name="2fa_code" 
                    class="form-control" 
@@ -143,11 +144,11 @@ h2{
                    inputmode="numeric">
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Verify & Enable 2FA</button>
+        <button type="submit" class="btn btn-primary w-100">Vérifier et activer la 2FA</button>
 
     </form>
 
-    <a href="{{ path('app_home') }}" class="back-link">Back to Home</a>
+    <a href="{{ path('app_home') }}" class="back-link">Retour à l'accueil</a>
 
 </div>
 

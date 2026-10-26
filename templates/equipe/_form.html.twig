@@ -5,14 +5,14 @@
 {% endif %}
 
 <div class="mb-4">
-    <label class="form-label" style="color: #cbd5e1; font-weight: 600; margin-bottom: 8px; display: block;">Team Name</label>
-    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Enter team name', 'style': 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 12px; border-radius: 12px;'}, 'required': false}) }}
+    <label class="form-label" style="color: #cbd5e1; font-weight: 600; margin-bottom: 8px; display: block;">Nom de l'équipe</label>
+    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'équipe', 'style': 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 12px; border-radius: 12px;'}, 'required': false}) }}
     {{ form_errors(form.nom) }}
 </div>
 
 <div class="mb-4">
-    <label class="form-label" style="color: #cbd5e1; font-weight: 600; margin-bottom: 8px; display: block;">Max Members</label>
-    {{ form_widget(form.maxMembers, {'attr': {'class': 'form-control', 'placeholder': 'Enter max members', 'style': 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 12px; border-radius: 12px;'}, 'required': false, 'min': null, 'max': null}) }}
+    <label class="form-label" style="color: #cbd5e1; font-weight: 600; margin-bottom: 8px; display: block;">Membres max</label>
+    {{ form_widget(form.maxMembers, {'attr': {'class': 'form-control', 'placeholder': 'Nombre maximum de membres', 'style': 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 12px; border-radius: 12px;'}, 'required': false, 'min': null, 'max': null}) }}
     {{ form_errors(form.maxMembers) }}
 </div>
 
@@ -26,8 +26,8 @@
 </div>
 
 <div class="form-actions" style="margin-top: 30px; text-align: center;">
-    <button type="submit" class="btn btn-submit" style="background: linear-gradient(135deg, #ec4899, #f472b6, #a855f7); color: white; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 700; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); cursor: pointer; transition: transform 0.2s;">
-        <i class="fas fa-save"></i> {{ button_label|default('Save Team') }}
+    <button type="submit" class="btn btn-submit" style="background: linear-gradient(135deg, #6366f1, #818cf8, #a78bfa); color: white; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 700; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); cursor: pointer; transition: transform 0.2s;">
+        <i class="fas fa-save"></i> {{ button_label|default("Créer l'équipe") }}
     </button>
 </div>
 

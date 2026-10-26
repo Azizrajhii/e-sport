@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Team{% endblock %}
+{% block title %}Modifier l'équipe — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -9,7 +9,7 @@
         min-height: 100vh;
         padding: 60px 20px;
         background: radial-gradient(circle at 0% 50%, rgba(59, 130, 246, 0.1), transparent 50%),
-                    radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.1), transparent 50%);
+                    radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.1), transparent 50%);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -58,11 +58,11 @@
 
 <div class="form-page-container">
     <div class="form-header">
-        <h1 class="form-title">Edit Team Details</h1>
+        <h1 class="form-title">Modifier l'équipe</h1>
     </div>
 
     <div class="form-card">
-        {{ include('equipe/_form.html.twig', {'button_label': 'Update Team'}) }}
+        {{ include('equipe/_form.html.twig', {'button_label': 'Enregistrer'}) }}
     </div>
 
     <div class="form-card danger-zone">

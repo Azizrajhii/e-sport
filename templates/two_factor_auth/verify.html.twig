@@ -11,7 +11,7 @@
 }
 
 body{
-    background: linear-gradient(90deg,#b8325b,#0b4fa3);
+    background: transparent;
 }
 
 .main-wrapper{
@@ -24,7 +24,8 @@ body{
 
 .register-box{
     width:500px;
-    background:white;
+    max-width:100%;
+    background:#121a2e;
     border-radius:6px;
     padding:40px;
     box-shadow:0 0 30px rgba(0,0,0,.3);
@@ -46,12 +47,12 @@ h2{
 
 .form-control:focus{
     box-shadow:none;
-    border-color:#635bff;
+    border-color:#6366f1;
     padding-left:8px;
 }
 
 .btn-primary{
-    background:linear-gradient(90deg,#635bff,#a52bf9);
+    background:linear-gradient(90deg,#6366f1,#a52bf9);
     border:none;
     padding:12px 30px;
     border-radius:4px;
@@ -61,7 +62,7 @@ h2{
 
 .btn-primary:hover{
     transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(99,91,255,.4);
+    box-shadow:0 10px 20px rgba(99, 102, 241,.4);
 }
 
 .alert{
@@ -86,12 +87,12 @@ h2{
         <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
 
-    <p class="text-center mb-4">Please enter the 6-digit code from your authenticator app.</p>
+    <p class="text-center mb-4">Entre le code à 6 chiffres de ton application d'authentification.</p>
 
     <form method="post">
         
         <div class="mb-3">
-            <label for="2fa_code" class="form-label">Verification Code</label>
+            <label for="2fa_code" class="form-label">Code de vérification</label>
             <input type="text" 
                    name="2fa_code" 
                    id="2fa_code"
@@ -107,7 +108,7 @@ h2{
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-        <button type="submit" class="btn btn-primary">Verify</button>
+        <button type="submit" class="btn btn-primary">Vérifier</button>
 
     </form>
 

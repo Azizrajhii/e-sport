@@ -2,71 +2,128 @@
 
 {% block title %}Statistiques Produits{% endblock %}
 
+{% block extra_css %}
+<style>
+    .kpi {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        height: 100%;
+    }
+
+    .kpi-icon {
+        flex: 0 0 48px;
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .kpi-icon.indigo  { background: rgba(99, 102, 241, 0.15);  color: #818cf8; }
+    .kpi-icon.emerald { background: rgba(16, 185, 129, 0.15);  color: #34d399; }
+    .kpi-icon.amber   { background: rgba(245, 158, 11, 0.15);  color: #fbbf24; }
+    .kpi-icon.violet  { background: rgba(139, 92, 246, 0.15);  color: #a78bfa; }
+
+    .kpi-label {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+        color: #fff;
+        font-size: 1.625rem;
+        font-weight: 700;
+        line-height: 1.2;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    .kpi-value small {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #94a3b8;
+    }
+
+    .chart-box {
+        position: relative;
+        height: 320px;
+    }
+
+    .chart-empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
 {% block admin_content %}
 
 {# ── Page Header ── #}
 <div class="page-header">
-    <h1 class="page-title">📊 Statistiques Produits</h1>
+    <h1 class="page-title">Statistiques Produits</h1>
     <p class="page-subtitle">Vue d'ensemble de ton e-commerce</p>
 </div>
 
-{# ── Stat Cards ── #}
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card">
-            <div class="stat-card">
-                <div class="number">{{ total_orders }}</div>
-                <div class="label"><i class="fas fa-shopping-bag me-1"></i> Commandes</div>
+{# ── KPI Cards ── #}
+{% set kpis = [
+    {label: 'Commandes payées', value: total_orders,   unit: null,  icon: 'fa-shopping-bag', color: 'indigo'},
+    {label: 'Revenus',          value: total_revenue,  unit: 'TND', icon: 'fa-coins',        color: 'emerald'},
+    {label: 'Produits',         value: total_products, unit: null,  icon: 'fa-box',          color: 'amber'},
+    {label: 'Utilisateurs',     value: total_users,    unit: null,  icon: 'fa-users',        color: 'violet'},
+] %}
+<div class="row g-3 g-lg-4 mb-4">
+    {% for kpi in kpis %}
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="kpi">
+                <div class="kpi-icon {{ kpi.color }}"><i class="fas {{ kpi.icon }}"></i></div>
+                <div style="min-width:0">
+                    <div class="kpi-label">{{ kpi.label }}</div>
+                    <div class="kpi-value">{{ kpi.value }}{% if kpi.unit %} <small>{{ kpi.unit }}</small>{% endif %}</div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="stat-card">
-                <div class="number">{{ total_revenue }} TND</div>
-                <div class="label"><i class="fas fa-coins me-1"></i> Revenus</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="stat-card">
-                <div class="number">{{ total_products }}</div>
-                <div class="label"><i class="fas fa-box me-1"></i> Produits</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="stat-card">
-                <div class="number">{{ total_users }}</div>
-                <div class="label"><i class="fas fa-users me-1"></i> Utilisateurs</div>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 {# ── Charts ── #}
-<div class="row g-4">
-    <div class="col-lg-7">
-        <div class="card">
+<div class="row g-3 g-lg-4">
+    <div class="col-xl-7">
+        <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <i class="fas fa-chart-line" style="color:#6366f1"></i>
-                Ventes par mois
+                <i class="fas fa-chart-column" style="color:#818cf8"></i>
+                Ventes par mois <span class="ms-auto small fw-normal" style="color:#94a3b8">TND</span>
             </div>
             <div class="card-body">
-                <canvas id="chartVentes" style="min-height:320px;"></canvas>
+                <div class="chart-box">
+                    <canvas id="chartVentes" aria-label="Ventes par mois"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-5">
-        <div class="card">
+    <div class="col-xl-5">
+        <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <i class="fas fa-trophy" style="color:#10b981"></i>
-                Top 5 Produits
+                <i class="fas fa-trophy" style="color:#34d399"></i>
+                Top 5 Produits <span class="ms-auto small fw-normal" style="color:#94a3b8">Quantité vendue</span>
             </div>
             <div class="card-body">
-                <canvas id="chartProduits" style="min-height:320px;"></canvas>
+                <div class="chart-box">
+                    <canvas id="chartProduits" aria-label="Top 5 produits"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -75,77 +132,82 @@
 {% endblock %}
 
 {% block javascripts %}
+{{ parent() }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#94a3b8';
+
+    const gridColor = 'rgba(148,163,184,0.1)';
+    const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#0f172a', borderColor: 'rgba(148,163,184,0.2)', borderWidth: 1, padding: 10 }
+        }
+    };
+
+    function showEmpty(canvas, data) {
+        if (data.length) return false;
+        canvas.insertAdjacentHTML('afterend', '<div class="chart-empty">Aucune donnée pour le moment</div>');
+        return true;
+    }
+
     // ── Ventes par mois ────────────────────────────────
-    new Chart(document.getElementById('chartVentes'), {
-        type: 'line',
-        data: {
-            labels: {{ months|raw }},
-            datasets: [{
-                label: 'Ventes (TND)',
-                data: {{ revenues|raw }},
-                borderColor: '#6366f1',
-                backgroundColor: 'rgba(99,102,241,0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#818cf8'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { labels: { color: '#94a3b8' } }
+    const months   = {{ months|raw }};
+    const revenues = {{ revenues|raw }};
+    const ventes   = document.getElementById('chartVentes');
+    if (!showEmpty(ventes, revenues)) {
+        new Chart(ventes, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Ventes (TND)',
+                    data: revenues,
+                    backgroundColor: '#6366f1',
+                    hoverBackgroundColor: '#818cf8',
+                    borderRadius: 6,
+                    maxBarThickness: 48
+                }]
             },
-            scales: {
-                x: {
-                    ticks: { color: '#94a3b8' },
-                    grid:  { color: 'rgba(148,163,184,0.1)' }
-                },
-                y: {
-                    ticks: { color: '#94a3b8' },
-                    grid:  { color: 'rgba(148,163,184,0.1)' }
+            options: {
+                ...baseOptions,
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, grid: { color: gridColor } }
                 }
             }
-        }
-    });
+        });
+    }
 
     // ── Top 5 produits ─────────────────────────────────
-    new Chart(document.getElementById('chartProduits'), {
-        type: 'bar',
-        data: {
-            labels: {{ productNames|raw }},
-            datasets: [{
-                label: 'Quantité vendue',
-                data: {{ productQtys|raw }},
-                backgroundColor: [
-                    'rgba(16,185,129,0.8)',
-                    'rgba(99,102,241,0.8)',
-                    'rgba(245,158,11,0.8)',
-                    'rgba(239,68,68,0.8)',
-                    'rgba(139,92,246,0.8)'
-                ],
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            indexAxis: 'y',
-            plugins: {
-                legend: { labels: { color: '#94a3b8' } }
+    const productQtys = {{ productQtys|raw }};
+    const produits    = document.getElementById('chartProduits');
+    if (!showEmpty(produits, productQtys)) {
+        new Chart(produits, {
+            type: 'bar',
+            data: {
+                labels: {{ productNames|raw }},
+                datasets: [{
+                    label: 'Quantité vendue',
+                    data: productQtys,
+                    backgroundColor: '#10b981',
+                    hoverBackgroundColor: '#34d399',
+                    borderRadius: 6,
+                    maxBarThickness: 28
+                }]
             },
-            scales: {
-                x: {
-                    ticks: { color: '#94a3b8' },
-                    grid:  { color: 'rgba(148,163,184,0.1)' }
-                },
-                y: {
-                    ticks: { color: '#94a3b8' },
-                    grid:  { color: 'rgba(148,163,184,0.1)' }
+            options: {
+                ...baseOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: gridColor } },
+                    y: { grid: { display: false } }
                 }
             }
-        }
-    });
+        });
+    }
 </script>
 {% endblock %}

@@ -47,6 +47,9 @@ class Jeu
     #[ORM\OneToMany(targetEntity: Tournoi::class, mappedBy: 'jeu')]
     private Collection $tournois;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
     public function __construct()
     {
         $this->tournois = new ArrayCollection();
@@ -113,6 +116,18 @@ class Jeu
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

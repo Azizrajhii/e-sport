@@ -1,650 +1,442 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}e-sports.tn{% endblock %}
+{% block title %}e-Sports.tn — La scène e-sport tunisienne{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* ---------- Hero ---------- */
+    .home-hero {
+        position: relative;
+        isolation: isolate;
+        min-height: calc(100vh - var(--nav-h));
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        margin-top: calc(-1 * var(--nav-h));
+        padding: calc(var(--nav-h) + 3rem) 0 4rem;
+    }
+
+    .home-hero__bg {
+        position: absolute;
+        inset: 0;
+        z-index: -3;
+        background: url('{{ asset('img/web/hero-stadium.jpg') }}') center / cover no-repeat;
+        animation: hero-zoom 20s ease-in-out infinite alternate;
+    }
+
+    .home-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background:
+            linear-gradient(90deg, rgba(11, 16, 32, 0.95) 0%, rgba(11, 16, 32, 0.7) 45%, rgba(11, 16, 32, 0.25) 100%),
+            linear-gradient(180deg, transparent 60%, var(--bg) 100%);
+    }
+
+    .orb {
+        position: absolute;
+        z-index: -1;
+        border-radius: 50%;
+        filter: blur(70px);
+        opacity: 0.55;
+        animation: orb 14s ease-in-out infinite alternate;
+    }
+    .orb.one { width: 420px; height: 420px; background: var(--primary); top: 10%; left: -120px; }
+    .orb.two { width: 320px; height: 320px; background: var(--accent); bottom: 5%; right: 10%; opacity: 0.3; animation-delay: -6s; }
+
+    @keyframes orb { to { transform: translate(80px, -40px) scale(1.15); } }
+
+    .home-hero h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: 0.95; margin: 0 0 1.25rem; text-transform: uppercase; }
+    .home-hero .lead { color: #cbd5e1; font-size: clamp(1rem, 1.6vw, 1.2rem); max-width: 560px; margin-bottom: 2rem; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .hero-ctas .btn { padding: 0.85rem 1.6rem; font-size: 1rem; }
+
+    .hero-counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; max-width: 720px; }
+    .hero-counter { padding: 1rem 1.1rem; border-radius: var(--radius-sm); background: rgba(18, 26, 46, 0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); }
+    .hero-counter .number { display: block; font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; color: #fff; line-height: 1.1; }
+    .hero-counter small { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .scroll-hint { position: absolute; left: 50%; bottom: 1.5rem; transform: translateX(-50%); color: var(--muted); font-size: 1.2rem; animation: float 2.4s ease-in-out infinite; }
+
+    /* ---------- Games marquee ---------- */
+    .marquee { overflow: hidden; border-block: 1px solid var(--border); background: rgba(18, 26, 46, 0.5); padding: 1rem 0; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+    .marquee__track { display: flex; gap: 3rem; width: max-content; animation: marquee 30s linear infinite; }
+    .marquee:hover .marquee__track { animation-play-state: paused; }
+    .marquee__item { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+    .marquee__item img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
+    .marquee__item i { color: var(--primary-light); font-size: 0.6rem; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ---------- Sections ---------- */
+    .home-section { padding: clamp(3.5rem, 8vw, 6rem) 0 0; }
+    .section-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+    .section-head h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); margin: 0; }
+    .section-head p { color: var(--muted); margin: 0.35rem 0 0; }
+    .link-more { font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .link-more i { transition: transform 0.25s var(--ease); }
+    .link-more:hover i { transform: translateX(4px); }
+
+    /* Tournament cards */
+    .t-card { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    .t-card__media { position: relative; height: 170px; overflow: hidden; }
+    .t-card__media img { width: 100%; height: 100%; object-fit: cover; }
+    .t-card__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(18, 26, 46, 0.95)); }
+    .t-card__status { position: absolute; top: 12px; left: 12px; z-index: 1; }
+    .t-card__body { padding: 1.25rem 1.4rem 1.4rem; display: flex; flex-direction: column; gap: 0.9rem; flex: 1; }
+    .t-card__game { color: var(--accent); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+    .t-card h3 { font-size: 1.4rem; margin: 0.15rem 0 0; }
+    .t-card__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .t-card__meta div { padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(11, 16, 32, 0.5); border: 1px solid var(--border); }
+    .t-card__meta small { display: block; color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .t-card__meta strong { color: #fff; font-size: 0.95rem; }
+    .progress-line { height: 6px; border-radius: 6px; background: rgba(148, 163, 184, 0.15); overflow: hidden; }
+    .progress-line span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--grad-accent); transition: width 1.4s var(--ease); }
+    .is-visible .progress-line span { width: var(--w); }
+    .t-card .btn { margin-top: auto; }
+
+    .status-live { background: rgba(239, 68, 68, 0.2) !important; color: #fecaca !important; }
+    .status-live::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--danger); animation: live-pulse 1.6s infinite; vertical-align: 1px; }
+
+    /* Game tiles */
+    .game-tile { position: relative; display: block; height: 220px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    .game-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s var(--ease), filter 0.4s; filter: saturate(0.85); }
+    .game-tile::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(11, 16, 32, 0.95)); }
+    .game-tile__info { position: absolute; left: 1.1rem; right: 1.1rem; bottom: 1rem; z-index: 1; }
+    .game-tile__info h3 { font-size: 1.35rem; margin: 0; color: #fff; }
+    .game-tile__info span { color: var(--muted); font-size: 0.8rem; }
+    .game-tile:hover img { transform: scale(1.1); filter: saturate(1.1); }
+    .game-tile:hover { border-color: rgba(99, 102, 241, 0.5); box-shadow: var(--glow); }
+
+    /* Match results */
+    .result { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; }
+    .result__team { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
+    .result__team.right { flex-direction: row-reverse; text-align: right; }
+    .result__team img, .result__team .ph { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 12px; object-fit: cover; background: var(--surface-2); display: grid; place-items: center; color: var(--muted); }
+    .result__team strong { color: #fff; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .result__team.win strong { color: #a7f3d0; }
+    .result__score { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 0.08em; text-align: center; line-height: 1; }
+    .result__score small { display: block; margin-top: 0.3rem; font-family: var(--font-body); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.04em; color: var(--muted); }
+
+    /* Ranking */
+    .ranking { overflow: hidden; }
+    .ranking table { margin: 0; }
+    .ranking td, .ranking th { padding: 0.9rem 1.1rem; vertical-align: middle; }
+    .rank-pill { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; font-weight: 700; background: rgba(148, 163, 184, 0.12); color: var(--text); }
+    .rank-1 .rank-pill { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #111; box-shadow: 0 0 20px rgba(245, 158, 11, 0.45); }
+    .rank-2 .rank-pill { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #111; }
+    .rank-3 .rank-pill { background: linear-gradient(135deg, #fdba74, #c2410c); color: #111; }
+    .team-cell { display: flex; align-items: center; gap: 0.7rem; color: #fff; font-weight: 600; }
+    .team-cell img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; }
+    .diff-pos { color: #6ee7b7; } .diff-neg { color: #fca5a5; }
+
+    /* Shop + blog cards */
+    .media-card { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    .media-card__img { position: relative; height: 210px; overflow: hidden; }
+    .media-card__img img { width: 100%; height: 100%; object-fit: cover; }
+    .media-card__tag { position: absolute; top: 12px; left: 12px; }
+    .media-card__body { padding: 1.25rem 1.4rem 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
+    .media-card__body h3 { font-size: 1.25rem; margin: 0; }
+    .media-card__body p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+    .media-card__foot { margin-top: auto; padding-top: 0.6rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .price { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff; }
+    .price small { color: var(--muted); font-size: 0.85rem; }
+
+    /* Final CTA */
+    .cta-band { position: relative; overflow: hidden; border-radius: 24px; padding: clamp(2rem, 5vw, 3.5rem); background: linear-gradient(120deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.15) 50%, rgba(34, 211, 238, 0.15)), url('{{ asset('img/web/crowd.jpg') }}') center / cover; }
+    .cta-band::before { content: ''; position: absolute; inset: 0; background: rgba(11, 16, 32, 0.6); }
+    .cta-band > * { position: relative; }
+    .cta-band h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 0.5rem; }
+
+    .empty-note { color: var(--muted); padding: 2rem; text-align: center; border: 1px dashed var(--border-strong); border-radius: var(--radius); }
+
+    @media (max-width: 767.98px) {
+        .hero-counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .result { grid-template-columns: 1fr; text-align: center; }
+        .result__team, .result__team.right { flex-direction: column; text-align: center; }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
 
-<!doctype html>
-<html lang="zxx">
+{# ===================== HERO ===================== #}
+<section class="home-hero">
+    <div class="home-hero__bg" aria-hidden="true"></div>
+    <div class="orb one" aria-hidden="true"></div>
+    <div class="orb two" aria-hidden="true"></div>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>gaming</title>
-    <link rel="icon" href="img/favicon.png">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- animate CSS -->
-    <link rel="stylesheet" href="css/animate.css">
-    <!-- owl carousel CSS -->
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <!-- font awesome CSS -->
-    <link rel="stylesheet" href="css/all.css">
-    <!-- flaticon CSS -->
-    <link rel="stylesheet" href="css/flaticon.css">
-    <link rel="stylesheet" href="css/themify-icons.css">
-    <!-- font awesome CSS -->
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <!-- swiper CSS -->
-    <link rel="stylesheet" href="css/slick.css">
-    <!-- style CSS -->
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-    <div class="body_bg">
-        <!--::header part start::-->
-    
-        <!-- Header part end-->
-
-       <!-- banner part start -->
-    <section class="banner_part" style="background-image: url('{{ asset('img/Red Neon Dynamic Gaming YouTube Thumbnail (1).png') }}');">
-        <div class="container">
-            <div class="row align-items-center justify-content-between">
-                <div class="col-lg-6 col-md-8">
-                    <div class="banner_text">
-                        <div class="banner_text_iner">
-                            <h1>Best Highlights of the Latest</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum</p>
-                            <a  class="btn_1"href="{{ path('app_register') }}">Register</a>
-                          
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- banner part end -->
-
-        <!--::client logo part end::-->
-        <section class="client_logo">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-12">
-                        <div class="client_logo_slider owl-carousel d-flex justify-content-between">
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_1.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_2.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_3.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_4.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_5.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_1.png" alt="">
-                            </div>
-                            <div class="single_client_logo">
-                                <img src="img/client_logo/client_logo_2.png" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!--::client logo part end::-->
-<!-- TOP SALES -->
-<section class="section_padding" style="background: rgba(0,0,0,0.3);">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <div class="section_tittle">
-                    <h2>🔥 Top Sales</h2>
-                    <p style="color: #94a3b8;">Les produits les plus vendus</p>
-                </div>
-            </div>
+        <span class="eyebrow"><span class="live-dot"></span> Saison 2026 en cours</span>
+        <h1>Joue. Gagne.<br><span class="text-shine">Deviens légende.</span></h1>
+        <p class="lead">Tournois officiels, équipes, statistiques en direct et boutique : toute la scène e-sport tunisienne au même endroit.</p>
+
+        <div class="hero-ctas">
+            <a href="{{ path('app_tournoi_index') }}" class="btn btn-primary"><i class="fas fa-trophy mr-2"></i> Voir les tournois</a>
+            {% if app.user %}
+                <a href="{{ path('app_my_teams') }}" class="btn btn-outline-light"><i class="fas fa-shield-alt mr-2"></i> Mes équipes</a>
+            {% else %}
+                <a href="{{ path('app_register') }}" class="btn btn-outline-light"><i class="fas fa-user-plus mr-2"></i> Créer un compte</a>
+            {% endif %}
         </div>
 
-        <div class="row justify-content-center mt-4">
-            {% for product in topSales %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div style="
-                    background: linear-gradient(145deg, rgba(15,23,42,0.9), rgba(30,41,59,0.7));
-                    border: 1px solid rgba(220,38,38,0.2);
-                    border-radius: 16px;
-                    overflow: hidden;
-                    transition: transform 0.3s, box-shadow 0.3s;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-                " onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 40px rgba(220,38,38,0.2)'"
-                   onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)'">
+        <div class="hero-counters" data-reveal>
+            <div class="hero-counter"><span class="number">{{ counters.tournois }}</span><small>Tournois</small></div>
+            <div class="hero-counter"><span class="number">{{ counters.equipes }}</span><small>Équipes</small></div>
+            <div class="hero-counter"><span class="number">{{ counters.joueurs }}</span><small>Joueurs</small></div>
+            <div class="hero-counter"><span class="number">{{ counters.cagnotte|number_format(0, '.', ' ') }}</span><small>TND de cash prize</small></div>
+        </div>
+    </div>
 
-                    <!-- Badge top 1/2/3 -->
-                    {% if loop.index == 1 %}
-                        <div style="background: linear-gradient(90deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 6px; font-size: 0.75rem; font-weight: 800; letter-spacing: 2px;">
-                            👑 BEST SELLER
-                        </div>
-                    {% elseif loop.index == 2 %}
-                        <div style="background: rgba(192,192,210,0.2); color: #c0c0d2; text-align: center; padding: 6px; font-size: 0.75rem; font-weight: 800; letter-spacing: 2px;">
-                            🥈 #2 TOP SALES
-                        </div>
-                    {% else %}
-                        <div style="background: rgba(205,127,50,0.2); color: #cd7f32; text-align: center; padding: 6px; font-size: 0.75rem; font-weight: 800; letter-spacing: 2px;">
-                            🥉 #3 TOP SALES
-                        </div>
-                    {% endif %}
+    <a href="#tournois" class="scroll-hint" aria-label="Défiler"><i class="fas fa-chevron-down"></i></a>
+</section>
 
-                    <!-- Image -->
-                    <div style="height: 200px; overflow: hidden;">
-                        <img src="{{ product.image }}" alt="{{ product.name }}"
-                             style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
+{# ===================== GAMES MARQUEE ===================== #}
+{% if jeux is not empty %}
+<div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+        {% for pass in 1..2 %}
+            {% for jeu in jeux %}
+                <span class="marquee__item">
+                    {% if jeu.image %}<img src="{{ asset(jeu.image) }}" alt="">{% endif %}
+                    {{ jeu.nom }} <i class="fas fa-circle"></i>
+                </span>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
-                    <!-- Info -->
-                    <div style="padding: 20px;">
-                        <h5 style="color: #e2e8f0; font-weight: 800; margin-bottom: 8px;">
-                            {{ product.name }}
-                        </h5>
-                        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 16px;">
-                            {{ product.description|slice(0, 80) }}...
-                        </p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="
-                                background: linear-gradient(90deg, #ef4444, #f59e0b);
-                                -webkit-background-clip: text;
-                                -webkit-text-fill-color: transparent;
-                                font-size: 1.4rem;
-                                font-weight: 900;
-                            ">
-                                {{ product.price|number_format(2, ',', ' ') }} TND
-                            </span>
-                            <a href="{{ path('app_product_show', {id: product.id}) }}"
-                               class="btn_1" style="padding: 8px 20px; font-size: 0.85rem;">
-                                Voir →
-                            </a>
-                        </div>
-                    </div>
-                </div>
+{# ===================== TOURNAMENTS ===================== #}
+<section class="home-section" id="tournois">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><i class="fas fa-trophy"></i> Compétitions</span>
+                <h2>Tournois à la une</h2>
+                <p>Inscris ton équipe avant la date limite.</p>
             </div>
+            <a href="{{ path('app_tournoi_index') }}" class="link-more">Tous les tournois <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="row g-4">
+            {% for t in tournois %}
+                {% set inscrits = t.equipes|length %}
+                {% set max = t.maxParticipants ?: 1 %}
+                <div class="col-lg-4 col-md-6">
+                    <article class="card t-card">
+                        <div class="t-card__media">
+                            <img src="{{ asset(t.jeu and t.jeu.image ? t.jeu.image : 'img/web/tournament-stage.jpg') }}" alt="" loading="lazy">
+                            <span class="t-card__status badge {{ t.statut == 'En cours' ? 'status-live' : 'bg-warning' }}">{{ t.statut }}</span>
+                        </div>
+                        <div class="t-card__body">
+                            <div>
+                                <div class="t-card__game">{{ t.jeu ? t.jeu.nom : 'Multi-jeux' }} · {{ t.type }}</div>
+                                <h3>{{ t.nom }}</h3>
+                            </div>
+                            <div class="t-card__meta">
+                                <div><small>Début</small><strong>{{ t.dateDebut|date('d/m/Y') }}</strong></div>
+                                <div><small>Cash prize</small><strong>{{ t.cagnotte ? t.cagnotte|number_format(0, '.', ' ') ~ ' €' : '—' }}</strong></div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-2" style="font-size:.8rem">
+                                    <span class="text-muted">Équipes inscrites</span>
+                                    <strong style="color:#fff">{{ inscrits }} / {{ t.maxParticipants ?: '∞' }}</strong>
+                                </div>
+                                <div class="progress-line"><span style="--w: {{ min(100, (inscrits / max * 100)|round) }}%"></span></div>
+                            </div>
+                            <a href="{{ path('app_tournoi_show', {id: t.id}) }}" class="btn btn-primary btn-block">Voir le tournoi</a>
+                        </div>
+                    </article>
+                </div>
             {% else %}
-                <p style="color: #64748b; text-align: center;">Aucune vente pour le moment.</p>
+                <div class="col-12"><p class="empty-note">Aucun tournoi à venir pour le moment.</p></div>
             {% endfor %}
         </div>
     </div>
 </section>
-<!-- TOP SALES END -->
-        <!-- about_us part start-->
-        <section class="about_us section_padding">
-            <div class="container">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-md-5 col-lg-6 col-xl-6">
-                        <div class="learning_img">
-                            <img src="img/85a5954b2faceccb6441e16096333e9f-removebg-preview.png" alt="">
+
+{# ===================== GAMES ===================== #}
+{% if jeux is not empty %}
+<section class="home-section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><i class="fas fa-gamepad"></i> Jeux</span>
+                <h2>Choisis ton arène</h2>
+            </div>
+            <a href="{{ path('app_jeu_index') }}" class="link-more">Tous les jeux <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for jeu in jeux %}
+                <div class="col-lg-4 col-md-6">
+                    <a class="game-tile" href="{{ path('app_jeu_show', {id: jeu.id}) }}">
+                        <img src="{{ asset(jeu.image ?: 'img/web/controller.jpg') }}" alt="" loading="lazy">
+                        <div class="game-tile__info">
+                            <h3>{{ jeu.nom }}</h3>
+                            <span>{{ jeu.genre }} · {{ jeu.plateforme }}</span>
                         </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ===================== RESULTS + RANKING ===================== #}
+<section class="home-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow"><i class="fas fa-bolt"></i> Résultats</span>
+                        <h2>Derniers matchs</h2>
                     </div>
-                    <div class="col-md-7 col-lg-6 col-xl-5">
-                        <div class="about_us_text">
-                            <h2>Find out about us in history</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing
-                                elit sed do eiusmod tempor incididunt ut labore et
-                                dolore magna aliqua. </p>
-                            <a href="#" class="btn_1">Install Now</a>
-                            <a href="#" class="btn_1">Watch Tutorial</a>
+                    <a href="{{ path('app_match_game_index') }}" class="link-more">Match center <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="d-grid gap-3" style="display:grid">
+                    {% for m in recentMatches %}
+                        {% set s1 = m.scoreTeam1 ?? 0 %}{% set s2 = m.scoreTeam2 ?? 0 %}
+                        <div class="card result">
+                            <div class="result__team {{ s1 > s2 ? 'win' }}">
+                                {% if m.equipe1.logo %}<img src="{{ asset('uploads/teams/' ~ m.equipe1.logo) }}" alt="">{% else %}<span class="ph"><i class="fas fa-users"></i></span>{% endif %}
+                                <strong>{{ m.equipe1.nom }}</strong>
+                            </div>
+                            <div class="result__score">{{ s1 }} : {{ s2 }}<small>{{ m.tournoi.nom }}</small></div>
+                            <div class="result__team right {{ s2 > s1 ? 'win' }}">
+                                {% if m.equipe2.logo %}<img src="{{ asset('uploads/teams/' ~ m.equipe2.logo) }}" alt="">{% else %}<span class="ph"><i class="fas fa-users"></i></span>{% endif %}
+                                <strong>{{ m.equipe2.nom }}</strong>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <p class="empty-note">Aucun match terminé pour le moment.</p>
+                    {% endfor %}
                 </div>
             </div>
-        </section>
-        <!-- about_us part end-->
 
-        <!--::about_us part start::-->
-        <section class="live_stareams padding_bottom">
-            <div class="container-fluid">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-md-2 offset-lg-2 offset-sm-1">
-                        <div class="live_stareams_text">
-                            <h2>live <br> stareams</h2>
-                            <div class="btn_1">install now</div>
-                        </div>
+            <div class="col-lg-6">
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow"><i class="fas fa-crown"></i> Classement</span>
+                        <h2>Top équipes</h2>
                     </div>
-                    <div class="col-md-7 offset-sm-1">
-                        <div class="live_stareams_slide owl-carousel">
-                            <div class="live_stareams_slide_img">
-                                <img src="https://i.pinimg.com/736x/66/44/3a/66443a423df80ab811956baba35db5d9.jpg" alt="">
-                                <div class="extends_video">
-                                    <a id="play-video_1" class="video-play-button popup-youtube"
-                                        href="https://www.youtube.com/watch?v=pBFQdxA-apI">
-                                        <span class="fas fa-play"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="live_stareams_slide_img">
-                                <img src="https://i.pinimg.com/736x/df/c8/59/dfc85904e622e5e24800668264289400.jpg" alt="">
-                                <div class="extends_video">
-                                    <a id="play-video_1" class="video-play-button popup-youtube"
-                                        href="https://www.youtube.com/watch?v=pBFQdxA-apI">
-                                        <span class="fas fa-play"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="live_stareams_slide_img">
-                                <img src="https://i.pinimg.com/736x/da/61/92/da6192fa09c92ec2dd60702bbea2043b.jpg" alt="">
-                                <div class="extends_video">
-                                    <a id="play-video_1" class="video-play-button popup-youtube"
-                                        href="https://www.youtube.com/watch?v=pBFQdxA-apI">
-                                        <span class="fas fa-play"></span>
-                                    </a>
-                                </div>
-                            </div>
-                           
-                           
-                        </div>
-                    </div>
+                    <a href="{{ path('app_equipe_index') }}" class="link-more">Centre des équipes <i class="fas fa-arrow-right"></i></a>
                 </div>
-            </div>
-        </section>
-        <!--::about_us part end::-->
-
-
-
-<div class="section">
-
-  <!-- TEXT -->
- 
-
-<!-- CARDS -->
-
-   
-
-  
-
-        <section class="Latest_War">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="section_tittle text-center">
-                            <h2>Latest War Fight</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-lg-12">
-                        <div class="Latest_War_text">
-                            <div class="row justify-content-center align-items-center h-100">
-                                <div class="col-lg-6">
-                                    <div class="single_war_text text-center">
-                                        <img src="img/favicon.png" alt="">
-                                        <h4>Open War chalange</h4>
-                                        <p>27 june , 2020</p>
-                                        <a href="#">view fight</a>
-                                        <div class="war_text_item d-flex justify-content-around align-items-center">
-                                            <img src="img/war_logo_1.png" alt="">
-                                            <h2>190<span>vs</span>189</h2>
-                                            <img src="img/war_logo_2.png" alt="">
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#" class="btn_2">Watch Tutorial</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="latest_war_list">
-                            <div class="single_war_text">
-                                <div class="war_text_item d-flex justify-content-around align-items-center">
-                                    <img src="img/war_logo_1.png" alt="">
-                                    <h2>190<span>vs</span>189</h2>
-                                    <img src="img/war_logo_2.png" alt="">
-                                    <div class="war_date">
-                                        <a href="#">27 june 2020</a>
-                                        <p>Open War chalange</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="single_war_text">
-                                <div class="war_text_item d-flex justify-content-around align-items-center">
-                                    <img src="img/war_logo_1.png" alt="">
-                                    <h2>190<span>vs</span>189</h2>
-                                    <img src="img/war_logo_2.png" alt="">
-                                    <div class="war_date">
-                                        <a href="#">27 june 2020</a>
-                                        <p>Open War chalange</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="single_war_text">
-                                <div class="war_text_item d-flex justify-content-around align-items-center">
-                                    <img src="img/war_logo_1.png" alt="">
-                                    <h2>190<span>vs</span>189</h2>
-                                    <img src="img/war_logo_2.png" alt="">
-                                    <div class="war_date">
-                                        <a href="#">27 june 2020</a>
-                                        <p>Open War chalange</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="single_war_text">
-                                <div class="war_text_item d-flex justify-content-around align-items-center">
-                                    <img src="img/war_logo_1.png" alt="">
-                                    <h2>190<span>vs</span>189</h2>
-                                    <img src="img/war_logo_2.png" alt="">
-                                    <div class="war_date">
-                                        <a href="#">27 june 2020</a>
-                                        <p>Open War chalange</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="Latest_War_text Latest_War_bg_1">
-                            <div class="row justify-content-center align-items-center h-100">
-                                <div class="col-lg-6">
-                                    <div class="single_war_text text-center">
-                                        <img src="img/favicon.png" alt="">
-                                        <h4>Open War chalange</h4>
-                                        <p>27 june , 2020</p>
-                                        <a href="#">view fight</a>
-                                        <div class="war_text_item d-flex justify-content-around align-items-center">
-                                            <img src="img/war_logo_1.png" alt="">
-                                            <h2>190<span>vs</span>189</h2>
-                                            <img src="img/war_logo_2.png" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#" class="btn_2">Watch Tutorial</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- use sasu part end-->
-
-        <!-- GLOBAL RANKING -->
-        <style>
-            .gr-section {
-                padding: 80px 0 100px;
-                position: relative;
-                overflow: hidden;
-            }
-            .gr-section::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -20%;
-                width: 600px;
-                height: 600px;
-                background: radial-gradient(circle, rgba(220,38,38,0.08) 0%, transparent 70%);
-                animation: grFloat 8s ease-in-out infinite;
-            }
-            .gr-section::after {
-                content: '';
-                position: absolute;
-                bottom: -40%;
-                right: -10%;
-                width: 500px;
-                height: 500px;
-                background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
-                animation: grFloat 10s ease-in-out infinite reverse;
-            }
-            @keyframes grFloat {
-                0%, 100% { transform: translate(0, 0); }
-                50% { transform: translate(30px, -20px); }
-            }
-            .gr-header {
-                text-align: center;
-                margin-bottom: 50px;
-                position: relative;
-                z-index: 2;
-            }
-            .gr-live {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                background: rgba(220,38,38,0.12);
-                border: 1px solid rgba(220,38,38,0.3);
-                color: #ef4444;
-                padding: 6px 18px;
-                border-radius: 999px;
-                font-size: 0.7rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                margin-bottom: 20px;
-            }
-            .gr-live-dot {
-                width: 8px;
-                height: 8px;
-                background: #ef4444;
-                border-radius: 50%;
-                animation: grPulse 1.5s ease-in-out infinite;
-            }
-            @keyframes grPulse {
-                0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
-                50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
-            }
-            .gr-title {
-                font-size: 2.8rem;
-                font-weight: 900;
-                color: #fff;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-                margin: 0;
-                text-shadow: 0 0 40px rgba(220,38,38,0.3);
-            }
-            .gr-title span {
-                background: linear-gradient(90deg, #ef4444, #f59e0b, #ef4444);
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                animation: grShine 3s linear infinite;
-            }
-            @keyframes grShine {
-                0% { background-position: 0% center; }
-                100% { background-position: 200% center; }
-            }
-            .gr-subtitle {
-                color: #64748b;
-                font-size: 0.95rem;
-                margin-top: 10px;
-                letter-spacing: 1px;
-            }
-            .gr-card {
-                position: relative;
-                z-index: 2;
-                background: linear-gradient(145deg, rgba(15,23,42,0.85), rgba(30,41,59,0.65));
-                border: 1px solid rgba(255,255,255,0.04);
-                border-radius: 24px;
-                overflow: hidden;
-                backdrop-filter: blur(20px);
-                box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-            }
-            .gr-card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, transparent, #ef4444, #f59e0b, #ef4444, transparent);
-                animation: grBorderGlow 4s linear infinite;
-                background-size: 200% auto;
-            }
-            @keyframes grBorderGlow {
-                0% { background-position: 0% center; }
-                100% { background-position: 200% center; }
-            }
-            .gr-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            .gr-table thead th {
-                padding: 18px 16px;
-                font-size: 0.65rem;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                color: #475569;
-                font-weight: 800;
-                text-align: center;
-                background: rgba(0,0,0,0.3);
-                border-bottom: 1px solid rgba(255,255,255,0.03);
-            }
-            .gr-table thead th:nth-child(2) { text-align: left; }
-            .gr-table tbody tr {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                border-bottom: 1px solid rgba(255,255,255,0.02);
-            }
-            .gr-table tbody tr:hover {
-                background: rgba(220,38,38,0.04);
-                transform: scale(1.005);
-            }
-            .gr-table tbody tr:last-child { border-bottom: none; }
-            .gr-table td {
-                padding: 16px;
-                text-align: center;
-                color: #94a3b8;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            .gr-table td:nth-child(2) { text-align: left; }
-
-            /* rank positions */
-            .gr-rank {
-                width: 42px;
-                height: 42px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 12px;
-                font-weight: 900;
-                font-size: 1rem;
-                position: relative;
-            }
-            .gr-rank-1 {
-                background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05));
-                color: #f59e0b;
-                box-shadow: 0 0 20px rgba(245,158,11,0.15);
-                border: 1px solid rgba(245,158,11,0.2);
-            }
-            .gr-rank-2 {
-                background: linear-gradient(135deg, rgba(192,192,210,0.15), rgba(192,192,210,0.05));
-                color: #c0c0d2;
-                border: 1px solid rgba(192,192,210,0.15);
-            }
-            .gr-rank-3 {
-                background: linear-gradient(135deg, rgba(205,127,50,0.15), rgba(205,127,50,0.05));
-                color: #cd7f32;
-                border: 1px solid rgba(205,127,50,0.15);
-            }
-            .gr-rank-default {
-                background: rgba(255,255,255,0.02);
-                color: #475569;
-                border: 1px solid rgba(255,255,255,0.03);
-            }
-
-            /* top 3 row glow */
-            .gr-row-1 { background: linear-gradient(90deg, rgba(245,158,11,0.04), transparent 60%); }
-            .gr-row-2 { background: linear-gradient(90deg, rgba(192,192,210,0.03), transparent 60%); }
-            .gr-row-3 { background: linear-gradient(90deg, rgba(205,127,50,0.03), transparent 60%); }
-            .gr-row-1:hover { background: linear-gradient(90deg, rgba(245,158,11,0.08), transparent 60%) !important; }
-            .gr-row-2:hover { background: linear-gradient(90deg, rgba(192,192,210,0.06), transparent 60%) !important; }
-            .gr-row-3:hover { background: linear-gradient(90deg, rgba(205,127,50,0.06), transparent 60%) !important; }
-
-            .gr-team-name {
-                font-weight: 800;
-                color: #e2e8f0;
-                font-size: 0.95rem;
-                letter-spacing: 0.5px;
-            }
-            .gr-row-1 .gr-team-name { color: #fbbf24; }
-
-            .gr-pts {
-                font-weight: 900;
-                color: #e2e8f0;
-                font-size: 1rem;
-            }
-            .gr-ppm {
-                font-weight: 900;
-                font-size: 1.05rem;
-                background: linear-gradient(90deg, #ef4444, #f59e0b);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-            .gr-diff-pos { color: #22c55e; font-weight: 700; }
-            .gr-diff-neg { color: #ef4444; font-weight: 700; }
-            .gr-diff-zero { color: #334155; }
-
-            .gr-empty {
-                text-align: center;
-                padding: 60px 20px;
-                color: #334155;
-                font-size: 1.1rem;
-                font-weight: 600;
-                letter-spacing: 1px;
-            }
-
-            @media (max-width: 768px) {
-                .gr-title { font-size: 1.8rem; letter-spacing: 1px; }
-                .gr-table td, .gr-table thead th { padding: 10px 8px; font-size: 0.78rem; }
-                .gr-rank { width: 32px; height: 32px; font-size: 0.85rem; border-radius: 8px; }
-                .gr-section { padding: 50px 0 60px; }
-            }
-        </style>
-
-        <section class="gr-section">
-            <div class="container">
-                <div class="gr-header">
-                    <div class="gr-live"><span class="gr-live-dot"></span> Live Rankings</div>
-                    <h2 class="gr-title">GLOBAL <span>RANKING</span></h2>
-                    <p class="gr-subtitle">Teams ranked by performance ratio — Pts / Match</p>
-                </div>
-
-                <div class="gr-card">
-                    <table class="gr-table">
+                <div class="card ranking">
+                    <table class="table table-hover">
                         <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Team</th>
-                                <th>MP</th>
-                                <th>W</th>
-                                <th>D</th>
-                                <th>L</th>
-                                <th>+/-</th>
-                                <th>Pts</th>
-                                <th>Pts/M</th>
-                            </tr>
+                            <tr><th>#</th><th>Équipe</th><th class="text-center">MJ</th><th class="text-center">Diff</th><th class="text-right">Pts</th></tr>
                         </thead>
                         <tbody>
-                            {% for r in ranking %}
-                            <tr class="{% if r.rang == 1 %}gr-row-1{% elseif r.rang == 2 %}gr-row-2{% elseif r.rang == 3 %}gr-row-3{% endif %}">
-                                <td>
-                                    <span class="gr-rank {% if r.rang == 1 %}gr-rank-1{% elseif r.rang == 2 %}gr-rank-2{% elseif r.rang == 3 %}gr-rank-3{% else %}gr-rank-default{% endif %}">
-                                        {% if r.rang == 1 %}👑{% else %}{{ r.rang }}{% endif %}
-                                    </span>
-                                </td>
-                                <td><span class="gr-team-name">{{ r.equipe.nom }}</span></td>
-                                <td>{{ r.mj }}</td>
-                                <td>{{ r.v }}</td>
-                                <td>{{ r.n }}</td>
-                                <td>{{ r.p }}</td>
-                                <td class="{% if r.diff > 0 %}gr-diff-pos{% elseif r.diff < 0 %}gr-diff-neg{% else %}gr-diff-zero{% endif %}">
-                                    {% if r.diff > 0 %}+{% endif %}{{ r.diff }}
-                                </td>
-                                <td><span class="gr-pts">{{ r.pts }}</span></td>
-                                <td><span class="gr-ppm">{{ r.ppm }}</span></td>
-                            </tr>
+                            {% for r in ranking|slice(0, 6) %}
+                                <tr class="rank-{{ r.rang }}">
+                                    <td><span class="rank-pill">{{ r.rang == 1 ? '👑' : r.rang }}</span></td>
+                                    <td>
+                                        <div class="team-cell">
+                                            {% if r.equipe.logo %}<img src="{{ asset('uploads/teams/' ~ r.equipe.logo) }}" alt="">{% endif %}
+                                            {{ r.equipe.nom }}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{ r.mj }}</td>
+                                    <td class="text-center {{ r.diff > 0 ? 'diff-pos' : (r.diff < 0 ? 'diff-neg') }}">{{ r.diff > 0 ? '+' }}{{ r.diff }}</td>
+                                    <td class="text-right" style="color:#fff;font-weight:700">{{ r.pts }}</td>
+                                </tr>
                             {% else %}
-                            <tr><td colspan="9" class="gr-empty">⚔️ No battles yet — rankings update after matches</td></tr>
+                                <tr><td colspan="5" class="text-center text-muted">Pas encore de classement.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </section>
-        <!-- GLOBAL RANKING END -->
+        </div>
+    </div>
+</section>
 
-       
-</body>
+{# ===================== SHOP ===================== #}
+{% if topSales is not empty %}
+<section class="home-section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><i class="fas fa-fire"></i> Boutique</span>
+                <h2>Meilleures ventes</h2>
+            </div>
+            <a href="{{ path('app_product_index2') }}" class="link-more">Toute la boutique <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for product in topSales %}
+                <div class="col-lg-4 col-md-6">
+                    <article class="card media-card">
+                        <div class="media-card__img">
+                            <img src="{{ product.image ?: asset('img/web/product-giftcard.jpg') }}" alt="{{ product.name }}" loading="lazy">
+                            <span class="media-card__tag badge {{ loop.index == 1 ? 'bg-warning' : 'bg-secondary' }}">{{ loop.index == 1 ? '👑 Best seller' : '#' ~ loop.index ~ ' des ventes' }}</span>
+                        </div>
+                        <div class="media-card__body">
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.description|length > 80 ? product.description|slice(0, 80) ~ '…' : product.description }}</p>
+                            <div class="media-card__foot">
+                                <span class="price">{{ product.price|number_format(2, ',', ' ') }} <small>TND</small></span>
+                                <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-primary btn-sm">Voir</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
-</html>
+{# ===================== BLOG ===================== #}
+{% if blogs is not empty %}
+<section class="home-section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><i class="fas fa-newspaper"></i> Actualités</span>
+                <h2>Derniers articles</h2>
+            </div>
+            <a href="{{ path('app_blog_user_index') }}" class="link-more">Tout le blog <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for blog in blogs %}
+                <div class="col-lg-4 col-md-6">
+                    <article class="card media-card">
+                        <div class="media-card__img">
+                            <img src="{{ asset('img/web/' ~ (blog.imageName ?: 'crowd.jpg')) }}" alt="" loading="lazy">
+                            {% if blog.category %}<span class="media-card__tag badge bg-primary">{{ blog.category }}</span>{% endif %}
+                        </div>
+                        <div class="media-card__body">
+                            <small class="text-muted"><i class="far fa-calendar mr-1"></i> {{ blog.createdAt|date('d/m/Y') }} · <i class="far fa-comment mr-1"></i> {{ blog.commentCount }}</small>
+                            <h3>{{ blog.title }}</h3>
+                            <p>{{ blog.content|length > 110 ? blog.content|slice(0, 110) ~ '…' : blog.content }}</p>
+                            <div class="media-card__foot">
+                                <a href="{{ path('app_blog_show', {id: blog.id}) }}" class="link-more">Lire l'article <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ===================== CTA ===================== #}
+<section class="home-section">
+    <div class="container">
+        <div class="cta-band glow-border d-flex flex-wrap align-items-center justify-content-between gap-4">
+            <div>
+                <h2>Prêt à entrer dans l'arène ?</h2>
+                <p class="mb-0" style="color:#cbd5e1">Crée ton équipe, invite tes coéquipiers et inscris-toi au prochain tournoi.</p>
+            </div>
+            <a href="{{ app.user ? path('app_equipe_new') : path('app_register') }}" class="btn btn-primary" style="padding:.9rem 1.8rem">
+                {{ app.user ? 'Créer une équipe' : 'Rejoindre la communauté' }} <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

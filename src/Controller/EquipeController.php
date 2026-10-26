@@ -131,6 +131,9 @@ final class EquipeController extends AbstractController
         if (!$equipe) {
             return $this->redirectToRoute('app_equipe_index');
         }
+        if ($this->getUser() !== $equipe->getOwner() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not the owner of this team.');
+        }
         $form = $this->createForm(Equipe1Type::class, $equipe);
         $form->handleRequest($request);
 
@@ -171,6 +174,9 @@ final class EquipeController extends AbstractController
         $equipe = $entityManager->getRepository(Equipe::class)->find($id);
         if (!$equipe) {
             return $this->redirectToRoute('app_equipe_index');
+        }
+        if ($this->getUser() !== $equipe->getOwner() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not the owner of this team.');
         }
         if ($this->isCsrfTokenValid('delete'.$equipe->getId(), $request->request->get('_token'))) {
             foreach ($matchGameRepository->findByEquipe($equipe) as $matchGame) {
@@ -424,7 +430,7 @@ final class EquipeController extends AbstractController
         // Results Chart (Doughnut: Wins / Losses / Draws)
         $resultsChart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
         $resultsChart->setData([
-            'labels' => ['Wins', 'Losses', 'Draws'],
+            'labels' => ['Victoires', 'Défaites', 'Nuls'],
             'datasets' => [[
                 'data' => [$wins, $losses, $draws],
                 'backgroundColor' => ['#22c55e', '#ef4444', '#6b7280'],
@@ -439,9 +445,9 @@ final class EquipeController extends AbstractController
         // Goals Chart (Bar: Goals For vs Goals Against)
         $goalsChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $goalsChart->setData([
-            'labels' => ['Goals For', 'Goals Against'],
+            'labels' => ['Buts marqués', 'Buts encaissés'],
             'datasets' => [[
-                'label' => 'Goals',
+                'label' => 'Buts',
                 'data' => [$goalsFor, $goalsAgainst],
                 'backgroundColor' => ['#3b82f6', '#ef4444'],
             ]],

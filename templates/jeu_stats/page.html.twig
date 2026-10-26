@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Statistiques des Jeux{% endblock %}
+{% block title %}Statistiques des jeux — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Statistiques',
+    icon: 'fa-chart-bar',
+    title: 'Statistiques des jeux',
+    subtitle: 'Tournois, équipes, matchs et cagnottes, jeu par jeu.',
+    image: 'img/web/live-studio.jpg'
+}) }}
 <section class="stats-page-section">
     <div class="container">
-        <div class="section-header">
-            <h1>Statistiques des Jeux</h1>
-            <p>Analyse détaillée des performances et métriques</p>
-        </div>
 
         {% if statsParJeu|length > 0 %}
             <!-- Summary Cards -->
@@ -32,7 +35,7 @@
                             {% set totalTournois = totalTournois + stat.nbTournois %}
                         {% endfor %}
                         <h4>{{ totalTournois }}</h4>
-                        <p>Tournois Total</p>
+                        <p>Tournois</p>
                     </div>
                 </div>
                 <div class="summary-card">
@@ -45,7 +48,7 @@
                             {% set totalEquipes = totalEquipes + stat.nbEquipes %}
                         {% endfor %}
                         <h4>{{ totalEquipes }}</h4>
-                        <p>Équipes Total</p>
+                        <p>Équipes</p>
                     </div>
                 </div>
                 <div class="summary-card">
@@ -55,7 +58,7 @@
                     <div class="summary-content">
                         {% set totalCagnotte = 0 %}
                         {% for stat in statsParJeu %}
-                            {% set totalCagnotte = totalCagnotte + (stat.cagnotteTotal|float) %}
+                            {% set totalCagnotte = totalCagnotte + stat.cagnotteTotal|default(0) %}
                         {% endfor %}
                         <h4>{{ (totalCagnotte / 1000)|number_format(0) }}K€</h4>
                         <p>Cagnotte Totale</p>
@@ -105,7 +108,7 @@
                                 </div>
                                 <div class="stat-content">
                                     <span class="stat-label">Cagnotte totale</span>
-                                    <span class="stat-value">{{ (stat.cagnotteTotal|float)|number_format(0, ',', ' ') }}€</span>
+                                    <span class="stat-value">{{ stat.cagnotteTotal|default(0)|number_format(0, ',', ' ') }}€</span>
                                 </div>
                             </div>
                             <div class="stat-row">
@@ -178,7 +181,7 @@
     .section-header h1 {
         font-size: 3em;
         margin-bottom: 10px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -212,21 +215,21 @@
     
     .summary-card:hover {
         transform: translateY(-5px);
-        border-color: #ff006e;
-        background: rgba(255, 0, 110, 0.05);
-        box-shadow: 0 15px 35px rgba(255, 0, 110, 0.2);
+        border-color: #6366f1;
+        background: rgba(99, 102, 241, 0.05);
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
     }
     
     .summary-icon {
         width: 70px;
         height: 70px;
         border-radius: 15px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 8px 20px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
     }
     
     .summary-icon i {
@@ -242,7 +245,7 @@
         font-size: 2.2em;
         font-weight: 800;
         margin: 0 0 5px 0;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -272,12 +275,12 @@
     
     .stat-box:hover {
         transform: translateY(-10px);
-        border-color: #ff006e;
-        box-shadow: 0 20px 40px rgba(255, 0, 110, 0.2);
+        border-color: #6366f1;
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
     }
     
     .stat-box-header {
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         padding: 25px;
         display: flex;
         justify-content: space-between;
@@ -322,9 +325,9 @@
     }
     
     .stat-row:hover {
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         transform: translateX(8px);
-        box-shadow: 0 8px 25px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
         border-color: transparent;
     }
     
@@ -399,7 +402,7 @@
     .stat-value {
         font-size: 1.2em;
         font-weight: 800;
-        color: #ff006e;
+        color: #6366f1;
     }
     
     .progress-bar-wrapper {
@@ -413,7 +416,7 @@
     
     .progress-bar {
         height: 100%;
-        background: linear-gradient(90deg, #ff006e, #8338ec);
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
         border-radius: 10px;
         transition: width 1s ease;
     }
@@ -445,19 +448,19 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
         padding: 12px 30px;
         border-radius: 25px;
         text-decoration: none;
         font-weight: 700;
         transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
     }
     
     .btn-view-game:hover {
         transform: scale(1.05);
-        box-shadow: 0 10px 30px rgba(255, 0, 110, 0.4);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
         color: white;
     }
     
@@ -482,13 +485,13 @@
     .no-stats-icon {
         width: 120px;
         height: 120px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 30px;
-        box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
     }
     
     .no-stats-icon i {
@@ -513,19 +516,19 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
         padding: 14px 32px;
         border-radius: 25px;
         text-decoration: none;
         font-weight: 700;
         transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
     }
     
     .btn-add-game:hover {
         transform: scale(1.05);
-        box-shadow: 0 10px 30px rgba(255, 0, 110, 0.4);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
         color: white;
     }
     

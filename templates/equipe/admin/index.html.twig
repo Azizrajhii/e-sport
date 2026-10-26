@@ -4,63 +4,12 @@
 
 {% block extra_css %}
 <style>
-    .stat-card {
-        text-align: center;
-        padding: 1.5rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-        z-index: -1;
-    }
-
-    .stat-card .number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-card .label {
-        color: #94a3b8;
-        font-weight: 500;
-        font-size: 0.875rem;
-    }
 
     .team-logo-mini {
         width: 32px;
         height: 32px;
         border-radius: 6px;
         object-fit: cover;
-    }
-
-    .action-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: var(--radius-sm);
-        border: none;
-        background: rgba(148, 163, 184, 0.1);
-        color: #94a3b8;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        font-size: 0.9rem;
-    }
-
-    .action-btn:hover {
-        background: rgba(99, 102, 241, 0.15);
-        color: var(--primary);
     }
 
     .btn-extract {
@@ -127,6 +76,8 @@
 
     .extract-group {
         display: flex;
+        flex-wrap: wrap;
+        max-width: 100%;
         align-items: center;
         gap: 0.5rem;
         background: rgba(30, 41, 59, 0.5);
@@ -139,11 +90,11 @@
 
 {% block admin_content %}
 <div class="page-header">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
         <div>
             <h1 class="page-title">Teams Management</h1>
         </div>
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
             {# Sélection du jeu + bouton d'extraction #}
             <form method="POST" action="{{ path('admin_equipe_extract') }}" class="d-inline" id="extractForm">
                 <input type="hidden" name="_token" value="{{ csrf_token('extract_teams') }}">

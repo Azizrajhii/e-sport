@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gaming Stats Hub{% endblock %}
+{% block title %}Stats des joueurs — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -276,10 +276,14 @@
     }
 </style>
 
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Stats joueurs', icon: 'fa-chart-line',
+    title: 'Stats des joueurs',
+    subtitle: 'Rang, KDA, historique : retrouve tes statistiques sur tous tes jeux.',
+    image: 'img/web/fps-player.jpg'
+}) }}
 <div class="stats-hub-hero">
     <div class="container">
-        <h1 class="stats-title">🎮 Gaming Stats Hub</h1>
-        <p class="stats-subtitle">Consultez vos statistiques pour tous vos jeux préférés</p>
         
         <div class="games-grid">
             <!-- League of Legends -->
@@ -469,7 +473,7 @@
                             <span class="game-stat-label">Ranked</span>
                         </div>
                         <div class="game-stat">
-                            <span class="game-stat-value">Wins</span>
+                            <span class="game-stat-value">Victoires</span>
                             <span class="game-stat-label">Victoires</span>
                         </div>
                         <div class="game-stat">

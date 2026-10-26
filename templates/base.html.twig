@@ -1,385 +1,227 @@
 <!doctype html>
-<html lang="zxx">
+<html lang="fr">
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>{% block title %}gaming{% endblock %}</title>
+<title>{% block title %}e-Sports.tn{% endblock %}</title>
 
 <link rel="icon" href="{{ asset('img/favicon.png') }}">
 
-<!-- CSS -->
+<!-- Bootstrap 4 grid/utilities + legacy template CSS (pages still rely on some of its classes) -->
 <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('css/animate.css') }}">
-<link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
-<link rel="stylesheet" href="{{ asset('css/all.css') }}">
-<link rel="stylesheet" href="{{ asset('css/flaticon.css') }}">
-<link rel="stylesheet" href="{{ asset('css/themify-icons.css') }}">
-<link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
-<link rel="stylesheet" href="{{ asset('css/slick.css') }}">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+<link rel="stylesheet" href="{{ asset('css/riot-stats.css') }}">
 
-<!-- Google fonts -->
+<!-- Fonts & icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Site theme: shared palette, components and animations -->
+<link rel="stylesheet" href="{{ asset('css/theme.css') }}">
 
-<link href="{{ asset('css/nice-select.css') }}" rel="stylesheet">
-<link href="{{ asset('css/magnific-popup.css') }}" rel="stylesheet">
-<link href="{{ asset('css/riot-stats.css') }}" rel="stylesheet">
-
+{% block stylesheets %}{% endblock %}
 {% block importmap %}{% endblock %}
-
 </head>
 
-<body>
+<body class="page-enter">
 
-<!-- Flash Messages -->
-{% for label, messages in app.flashes %}
-    {% set alertClass = label == 'error' ? 'danger' : label %}
-    <div class="alert alert-{{ alertClass }} alert-dismissible fade show" role="alert" style="margin-top: 80px; margin-left: 20px; margin-right: 20px;">
+<div class="scroll-progress" aria-hidden="true"></div>
+
+{# ===== Flash messages ===== #}
+{% set flashes = app.flashes %}
+{% if flashes is not empty %}
+<div class="flash-stack" role="status">
+    {% for label, messages in flashes %}
+        {% set alertClass = label == 'error' ? 'danger' : label %}
         {% for message in messages %}
-            <div>{{ message }}</div>
+        <div class="alert alert-{{ alertClass }} d-flex align-items-start gap-2">
+            <div class="flex-grow-1">{{ message }}</div>
+            <button type="button" class="btn-close btn-close-white ms-2" aria-label="Fermer" onclick="this.closest('.alert').remove()"></button>
+        </div>
         {% endfor %}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-{% endfor %}
+    {% endfor %}
+</div>
+{% endif %}
 
-<!-- ===== NAVBAR ===== -->
-
-
-
-<header class="main_menu single_page_menu">
-<div class="container">
-<div class="row align-items-center">
-<div class="col-lg-12">
-
-<nav class="navbar navbar-expand-lg navbar-light">
-
-<a class="navbar-brand" href="{{ path('app_home') }}">
-<img src="{{ asset('img/Black_and_Green_Illustrative_E-Sports_Gaming_Logo__3_-removebg-preview.png') }}" width="80">
-</a>
-
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
-<span class="menu_icon"><i class="fas fa-bars"></i></span>
-</button>
-
-<div class="collapse navbar-collapse main-menu-item" id="navbarSupportedContent">
-<ul class="navbar-nav">
-
-<li class="nav-item">
-<a class="nav-link" href="{{ path('app_home') }}">Home</a>
-</li>
-
-
-
-<li class="nav-item">
-<a class="nav-link" href="{{ path('app_jeu_index') }}">Jeux</a>
-</li>
-
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="teamDropdown"
-       role="button" data-toggle="dropdown" aria-haspopup="true"
-       aria-expanded="false">
-       Team
-    </a>
-    <div class="dropdown-menu" aria-labelledby="teamDropdown">
-        <a class="dropdown-item" href="{{ path('app_equipe_index') }}">Team Hub</a>
-
-        {% if app.user %}
-        <a class="dropdown-item" href="{{ path('app_my_teams') }}">My Teams</a>
-        {% endif %}
-    </div>
-</li>
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="tournoiDropdown"
-       role="button" data-toggle="dropdown" aria-haspopup="true"
-       aria-expanded="false">
-       Tournoi
-    </a>
-    <div class="dropdown-menu dropdown-menu-large" aria-labelledby="tournoiDropdown">
-        <a class="dropdown-item" href="{{ path('app_tournoi_index') }}">
-            <i class="fas fa-trophy"></i> Tous les Tournois
+{# ===== Navbar ===== #}
+<header class="site-nav">
+    <div class="container">
+        <a class="site-brand" href="{{ path('app_home') }}">
+            <img src="{{ asset('img/Black_and_Green_Illustrative_E-Sports_Gaming_Logo__3_-removebg-preview.png') }}" alt="">
+            <span>e-Sports<b>.tn</b></span>
         </a>
-        <a class="dropdown-item stats-btn" href="{{ path('app_jeu_stats_page') }}">
-            <i class="fas fa-chart-bar"></i> Stats
-        </a>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-stats-container" id="jeu-stats-dropdown">
-            <div class="loading-stats">
-                <i class="fas fa-spinner fa-spin"></i> Chargement des statistiques...
+
+        <button class="icon-btn nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="siteMenu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <ul class="site-menu" id="siteMenu">
+            <li><a class="site-link" href="{{ path('app_home') }}">Accueil</a></li>
+            <li><a class="site-link" href="{{ path('app_jeu_index') }}">Jeux</a></li>
+
+            <li class="has-menu" id="tournoiMenu">
+                <a class="site-link" href="{{ path('app_tournoi_index') }}" aria-haspopup="true" aria-expanded="false">
+                    Tournois <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="site-submenu wide">
+                    <a href="{{ path('app_tournoi_index') }}"><i class="fas fa-trophy"></i> Tous les tournois</a>
+                    <a href="{{ path('app_jeu_stats_page') }}"><i class="fas fa-chart-bar"></i> Statistiques des jeux</a>
+                    <a href="{{ path('app_match_game_index') }}"><i class="fas fa-gamepad"></i> Match center</a>
+                    <div class="dropdown-stats-container" id="jeu-stats-dropdown">
+                        <div class="loading-stats"><i class="fas fa-spinner fa-spin"></i> Chargement des statistiques…</div>
+                    </div>
+                </div>
+            </li>
+
+            <li class="has-menu">
+                <a class="site-link" href="{{ path('app_equipe_index') }}" aria-haspopup="true" aria-expanded="false">
+                    Équipes <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="site-submenu">
+                    <a href="{{ path('app_equipe_index') }}"><i class="fas fa-users"></i> Centre des équipes</a>
+                    <a href="{{ path('app_equipe_discover') }}"><i class="fas fa-compass"></i> Découvrir les équipes</a>
+                    {% if app.user %}
+                    <a href="{{ path('app_my_teams') }}"><i class="fas fa-shield-alt"></i> Mes équipes</a>
+                    {% endif %}
+                </div>
+            </li>
+
+            <li><a class="site-link" href="{{ path('app_stats_hub') }}">Stats</a></li>
+            <li><a class="site-link" href="{{ path('app_blog_user_index') }}">Blog</a></li>
+            <li><a class="site-link" href="{{ path('app_product_index2') }}">Boutique</a></li>
+            <li>
+                <a class="site-link live" href="{{ path('app_stream_index') }}">
+                    <span class="live-dot"></span> LIVE
+                </a>
+            </li>
+
+            <li class="site-actions">
+                {% if app.user %}
+                    <a class="icon-btn" href="{{ path('app_wishlist_index') }}" title="Ma wishlist"><i class="fas fa-heart"></i></a>
+                {% endif %}
+                <a class="icon-btn" href="{{ path('app_cart_index') }}" title="Mon panier">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="count">0</span>
+                </a>
+                {% if app.user %}
+                    <a class="icon-btn" href="{{ path('app_profile') }}" title="Mon profil"><i class="fas fa-user"></i></a>
+                    <a class="icon-btn" href="{{ path('app_logout') }}" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></a>
+                {% else %}
+                    <a class="btn btn-primary btn-sm px-3" href="{{ path('app_login') }}">Connexion</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</header>
+
+{# ===== Page content ===== #}
+<main>
+{% block body %}{% endblock %}
+</main>
+
+{# ===== Footer ===== #}
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <a class="site-brand mb-3" href="{{ path('app_home') }}">
+                    <img src="{{ asset('img/Black_and_Green_Illustrative_E-Sports_Gaming_Logo__3_-removebg-preview.png') }}" alt="">
+                    <span>e-Sports<b>.tn</b></span>
+                </a>
+                <p>La plateforme e-sport tunisienne : tournois, équipes, stats en direct et boutique officielle.</p>
+                <div class="footer-social">
+                    <a href="#" class="icon-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="icon-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="icon-btn" aria-label="Twitch"><i class="fab fa-twitch"></i></a>
+                    <a href="#" class="icon-btn" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-6">
+                <h5>Compétition</h5>
+                <ul>
+                    <li><a href="{{ path('app_tournoi_index') }}">Tournois</a></li>
+                    <li><a href="{{ path('app_equipe_index') }}">Équipes</a></li>
+                    <li><a href="{{ path('app_jeu_index') }}">Jeux</a></li>
+                    <li><a href="{{ path('app_stream_index') }}">Live</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-6 col-6">
+                <h5>Communauté</h5>
+                <ul>
+                    <li><a href="{{ path('app_stats_hub') }}">Stats joueurs</a></li>
+                    <li><a href="{{ path('app_blog_user_index') }}">Blog</a></li>
+                    <li><a href="{{ path('app_product_index2') }}">Boutique</a></li>
+                    <li><a href="{{ app.user ? path('app_profile') : path('app_register') }}">{{ app.user ? 'Mon profil' : 'Créer un compte' }}</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h5>Newsletter</h5>
+                <p>Résultats, nouveaux tournois et promos de la boutique, une fois par semaine.</p>
+                <form class="newsletter" onsubmit="event.preventDefault(); this.innerHTML = '<p class=&quot;mb-0&quot; style=&quot;color:var(--success)&quot;><i class=&quot;fas fa-check-circle me-2&quot;></i>Merci, à bientôt !</p>';">
+                    <input type="email" class="form-control" placeholder="Votre email" required aria-label="Email">
+                    <button class="btn btn-primary" type="submit" aria-label="S'inscrire"><i class="far fa-paper-plane"></i></button>
+                </form>
             </div>
         </div>
     </div>
-</li>
- <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown"
-       role="button" data-toggle="dropdown" aria-haspopup="true"
-       aria-expanded="false">
-       Blog
-    </a>
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="{{ path('app_blog_user_index') }}">Blog</a>
-        <a class="dropdown-item" href="">Single blog</a>
+    <div class="footer-bottom">
+        <div class="container d-flex flex-wrap justify-content-between gap-2">
+            <span>&copy; {{ 'now'|date('Y') }} e-Sports.tn — Tous droits réservés</span>
+            <span>Fait avec <i class="fas fa-heart" style="color:var(--danger)"></i> à Tunis</span>
+        </div>
     </div>
-</li>
-<li class="nav-item ms-2">
-                                <a class="nav-link live-link" href="{{ path('app_stream_index') }}">
-                                    <span class="live-dot me-1"></span>
-                                    LIVE
-                                </a>
-                            </li>
-<li class="nav-item">
-<a class="nav-link" href="{{ path('app_product_index2') }}">Products</a>
-</li>
+</footer>
 
-<li class="nav-item">
-<a class="nav-link" href="{{ path('app_stats_hub') }}">
-    <i class="fas fa-chart-line"></i> Stats
-</a>
-</li>
+<button class="icon-btn to-top" type="button" aria-label="Retour en haut"><i class="fas fa-arrow-up"></i></button>
 
-
-<li class="nav-item">
-<a class="nav-link" href="/{{app.user ? 'logout':'login'}}">{{app.user ? 'logout':'login'}}</a>
-</li>
-<li class="nav-item">
-    {% if app.user %}
-    <a class="nav-link position-relative" href="{{ path('app_wishlist_index') }}" title="Ma Wishlist">
-        <i class="fas fa-heart" style="color: #ef4444;"></i>
-    </a>
-    {% endif %}
-</li>
-<li class="nav-item">
-    <a class="nav-link position-relative" href="{{ path('app_cart_index') }}">
-        <i class="fas fa-shopping-cart"></i>
-
-        <!-- Compteur du panier -->
-        <span id="cart-count"
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            0
-        </span>
-    </a>
-</li>
-
-<li class="nav-item">
-    {% if app.user %}
-        <a class="nav-link" href="{{ path('app_profile') }}">
-            <i class="bi bi-person-circle" style="font-size: 1.3rem;"></i>
-        </a>
-    {% endif %}
-</li>
-
-</ul>
-</div>
-
-
-</nav>
-</div>
-</div>
-</div>
-</header>
-
-
-{# ===== PAGE CONTENT BLOCK ===== #}
-{% block body %}{% endblock %}
-
-
-        <!--::footer_part start::-->
-        <footer class="footer_part">
-            <div class="footer_top">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single_footer_part">
-                                <a href="index.html" class="footer_logo_iner"> <img src="img/logo.png" alt="#"> </a>
-                                <p>Heaven fruitful doesn't over lesser days appear creeping seasons so behold bearing
-                                    days
-                                    open
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single_footer_part">
-                                <h4>Contact Info</h4>
-                                <p>Address : Your address goes
-                                    here, your demo address.
-                                    Bangladesh.</p>
-                                <p>Phone : +8880 44338899</p>
-                                <p>Email : info@colorlib.com</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single_footer_part">
-                                <h4>Important Link</h4>
-                                <ul class="list-unstyled">
-                                    <li><a href=""> WHMCS-bridge</a></li>
-                                    <li><a href="">Search Domain</a></li>
-                                    <li><a href="">My Account</a></li>
-                                    <li><a href="">Shopping Cart</a></li>
-                                    <li><a href="">Our Shop</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="single_footer_part">
-                                <h4>Newsletter</h4>
-                                <p>Heaven fruitful doesn't over lesser in days. Appear creeping seasons deve behold
-                                    bearing
-                                    days
-                                    open
-                                </p>
-                                <div id="mc_embed_signup">
-                                    <form target="_blank"
-                                        action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
-                                        method="get" class="subscribe_form relative mail_part">
-                                        <input type="email" name="email" id="newsletter-form-email"
-                                            placeholder="Email Address" class="placeholder hide-on-focus"
-                                            onfocus="this.placeholder = ''"
-                                            onblur="this.placeholder = ' Email Address '">
-                                        <button type="submit" name="submit" id="newsletter-submit"
-                                            class="email_icon newsletter-submit button-contactForm"><i
-                                                class="far fa-paper-plane"></i></button>
-                                        <div class="mt-10 info"></div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="copygight_text">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8">
-                            <div class="copyright_text">
-                                <P><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></P>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="footer_icon social_icon">
-                                <ul class="list-unstyled">
-                                    <li><a href="#" class="single_social_icon"><i class="fab fa-facebook-f"></i></a>
-                                    </li>
-                                    <li><a href="#" class="single_social_icon"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#" class="single_social_icon"><i class="fas fa-globe"></i></a></li>
-                                    <li><a href="#" class="single_social_icon"><i class="fab fa-behance"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-
-<!-- JS -->
-<script src="{{ asset('js/jquery-1.12.1.min.js') }}"></script>
-<script src="{{ asset('js/popper.min.js') }}"></script>
-<script src="{{ asset('js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/jquery.magnific-popup.js') }}"></script>
-<script src="{{ asset('js/owl.carousel.min.js') }}"></script>
-<script src="{{ asset('js/slick.min.js') }}"></script>
-<script src="{{ asset('js/jquery.nice-select.min.js') }}"></script>
-<script src="{{ asset('js/waypoints.min.js') }}"></script>
-<script src="{{ asset('js/jquery.easing.min.js') }}"></script>
-<script src="{{ asset('js/masonry.pkgd.min.js') }}"></script>
-<script src="{{ asset('js/jquery.ajaxchimp.min.js') }}"></script>
-<script src="{{ asset('js/jquery.counterup.min.js') }}"></script>
-<script src="{{ asset('js/custom.js') }}"></script>
-<script src="{{ asset('jss/main.js') }}"></script>
+<!-- JS: the legacy jQuery plugins targeted the original demo template and were unused -->
+<script src="{{ asset('js/theme.js') }}"></script>
 <script>
+// Cart counter (bumps when the value changes)
 function loadCartCount() {
     fetch("{{ path('app_cart_data') }}")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("cart-count").innerText = data.totalItems;
-        });
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            var el = document.getElementById('cart-count');
+            if (!el) return;
+            if (el.innerText !== String(data.totalItems)) {
+                el.innerText = data.totalItems;
+                el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+            }
+            el.style.display = data.totalItems > 0 ? '' : 'none';
+        })
+        .catch(function () {});
 }
+document.addEventListener('DOMContentLoaded', loadCartCount);
 
-document.addEventListener("DOMContentLoaded", loadCartCount);
+// Game stats inside the Tournois menu, loaded the first time it opens
+(function () {
+    var menu = document.getElementById('tournoiMenu');
+    var container = document.getElementById('jeu-stats-dropdown');
+    var loaded = false;
+    function load() {
+        if (loaded) return;
+        loaded = true;
+        fetch("{{ path('app_jeu_stats_dropdown') }}")
+            .then(function (r) { return r.text(); })
+            .then(function (html) { container.innerHTML = html; })
+            .catch(function () { container.innerHTML = '<div class="loading-stats" style="color:var(--danger)">Erreur de chargement</div>'; });
+    }
+    if (menu) {
+        menu.addEventListener('mouseenter', load);
+        menu.addEventListener('submenu:open', load);
+    }
+})();
 </script>
 
-<!-- Stats Dropdown Styles -->
 <style>
-    .dropdown-menu-large {
-        min-width: 400px;
-        max-width: 900px;
-    }
-    
-    .dropdown-stats-container {
-        max-height: 500px;
-        overflow-y: auto;
-    }
-    
-    .loading-stats {
-        text-align: center;
-        padding: 20px;
-        color: #667eea;
-    }
-    
-    .dropdown-item {
-        padding: 10px 20px;
-        transition: all 0.3s ease;
-    }
-    
-    .dropdown-item:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .dropdown-item i {
-        margin-right: 8px;
-    }
-    
-    .dropdown-item.stats-btn {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        margin: 5px 10px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
-    
-    .dropdown-item.stats-btn:hover {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        transform: scale(1.02);
-        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
-    }
+    .dropdown-stats-container { max-height: 360px; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid var(--border); padding-top: 0.35rem; }
+    .loading-stats { text-align: center; padding: 1rem; color: var(--muted); font-size: 0.875rem; }
 </style>
 
-<!-- Load Stats on Dropdown Open -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const tournoiDropdown = document.getElementById('tournoiDropdown');
-    const statsContainer = document.getElementById('jeu-stats-dropdown');
-    let statsLoaded = false;
-    
-    if (tournoiDropdown) {
-        tournoiDropdown.addEventListener('click', function(e) {
-            if (!statsLoaded) {
-                // Charger les stats via AJAX
-                fetch('{{ path('app_jeu_stats_dropdown') }}')
-                    .then(response => response.text())
-                    .then(html => {
-                        statsContainer.innerHTML = html;
-                        statsLoaded = true;
-                    })
-                    .catch(error => {
-                        statsContainer.innerHTML = '<div class="loading-stats" style="color: #ef4444;">❌ Erreur de chargement</div>';
-                    });
-            }
-        });
-    }
-});
-</script>
-
+{% block javascripts %}{% endblock %}
 </body>
-Error 404 (Not Found)!!1
+</html>

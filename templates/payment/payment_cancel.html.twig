@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Payment Cancelled - e-sports.tn{% endblock %}
+{% block title %}Paiement annulé — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -10,7 +10,7 @@
     padding: 60px 0;
 }
 .cancel-card {
-    background: #fff; border-radius: 20px; padding: 60px 50px;
+    background: #121a2e; border-radius: 20px; padding: 60px 50px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
     text-align: center; max-width: 500px; width: 100%;
 }
@@ -36,16 +36,16 @@
         </div>
 
         <h1 class="fw-bold mb-2" style="font-size:2rem;">Payment Cancelled</h1>
-        <p class="text-muted mb-4">No charges were made. Your cart is still saved.</p>
+        <p class="text-muted mb-4">Aucun paiement n'a été effectué. Ton panier est toujours enregistré.</p>
 
         <div class="alert alert-info text-start">
             <i class="fas fa-info-circle me-2"></i>
-            Order <strong>{{ order.orderNumber }}</strong> was cancelled.
+            Commande <strong>{{ order.orderNumber }}</strong> was cancelled.
         </div>
 
         <div class="mt-4 d-flex gap-3 justify-content-center">
-            <a href="{{ path('app_cart_index') }}" class="btn btn-primary px-4">Back to Cart</a>
-            <a href="{{ path('app_product_index') }}" class="btn btn-outline-secondary px-4">Keep Shopping</a>
+            <a href="{{ path('app_cart_index') }}" class="btn btn-primary px-4">Retour au panier</a>
+            <a href="{{ path('app_product_index2') }}" class="btn btn-outline-secondary px-4">Continuer mes achats</a>
         </div>
     </div>
 </div>

@@ -71,10 +71,21 @@ class JeuController extends AbstractController
     #[Route('/{id}', name: 'admin_jeu_delete', methods: ['POST'])]
     public function delete(Request $request, Jeu $jeu, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$jeu->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($jeu);
-            $entityManager->flush();
+        if (!$this->isCsrfTokenValid('delete'.$jeu->getId(), $request->request->get('_token'))) {
+            return $this->redirectToRoute('admin_jeu_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        if ($jeu->getTournois()->count() > 0) {
+            $this->addFlash(
+                'danger',
+                'Impossible de supprimer ce jeu : des tournois y sont encore liés. Supprimez ou modifiez ces tournois avant de supprimer le jeu.'
+            );
+
+            return $this->redirectToRoute('admin_jeu_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $entityManager->remove($jeu);
+        $entityManager->flush();
 
         return $this->redirectToRoute('admin_jeu_index', [], Response::HTTP_SEE_OTHER);
     }

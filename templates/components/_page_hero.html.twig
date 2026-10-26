@@ -1,0 +1,31 @@
+{#
+    Shared page header. Usage:
+    {{ include('components/_page_hero.html.twig', {
+        eyebrow: 'Compétitions', icon: 'fa-trophy',
+        title: 'Tous les tournois', subtitle: '…',
+        image: 'img/web/tournament-stage.jpg',
+        actions: [{label: 'Créer', url: path('…'), icon: 'fa-plus', style: 'primary'}]
+    }) }}
+#}
+<section class="page-hero" style="--hero-img: url('{{ asset(image|default('img/web/lan-room.jpg')) }}')">
+    <div class="container">
+        <div class="page-hero__inner">
+            <div>
+                {% if eyebrow is defined and eyebrow %}
+                    <span class="eyebrow">{% if icon is defined and icon %}<i class="fas {{ icon }}"></i>{% endif %} {{ eyebrow }}</span>
+                {% endif %}
+                <h1 class="text-shine">{{ title }}</h1>
+                {% if subtitle is defined and subtitle %}<p>{{ subtitle }}</p>{% endif %}
+            </div>
+            {% if actions is defined and actions is not empty %}
+                <div class="page-hero__actions">
+                    {% for action in actions %}
+                        <a href="{{ action.url }}" class="btn {{ action.style|default('primary') == 'primary' ? 'btn-primary' : 'btn-outline-light' }}">
+                            {% if action.icon is defined %}<i class="fas {{ action.icon }} mr-2"></i>{% endif %}{{ action.label }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

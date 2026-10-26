@@ -29,17 +29,6 @@ class RegistrationType extends AbstractType
                     new Assert\Email(['message' => 'Email invalide']),
                 ],
             ])
-            ->add('role', ChoiceType::class, [
-                'mapped' => false, // IMPORTANT! avoid mapping to non-existent $role
-                'choices' => [
-                    'Utilisateur' => 'ROLE_USER',
-                    'Admin' => 'ROLE_ADMIN',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Choice(['choices' => ['ROLE_USER','ROLE_ADMIN'], 'message' => 'Rôle invalide'])
-                ],
-            ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'mapped' => false,

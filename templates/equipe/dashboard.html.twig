@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Team Dashboard{% endblock %}
+{% block title %}Tableau de bord de l'équipe — e-Sports.tn{% endblock %}
 
 {% block importmap %}{{ importmap('app') }}{% endblock %}
 
@@ -30,11 +30,11 @@
         <div class="team-actions">
             {% if membership.role == 'LEADER' %}
                 <a href="{{ path('app_equipe_membres', {id: team.id}) }}">Membres</a>
-                <a href="{{ path('app_equipe_edit', {id: team.id}) }}">Settings</a>
+                <a href="{{ path('app_equipe_edit', {id: team.id}) }}">Paramètres</a>
             {% elseif membership.role == 'MEMBER' %}
                 <form method="post" action="{{ path('app_equipe_leave', {id: team.id}) }}" onsubmit="return confirm('Are you sure you want to leave this team?');" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ team.id) }}">
-                    <button type="submit" class="btn-dashboard-action">Leave Team</button>
+                    <button type="submit" class="btn-dashboard-action">Quitter l'équipe</button>
                 </form>
             {% endif %}
         </div>
@@ -44,10 +44,10 @@
     <section class="stats-section">
         <h2 class="stats-section-title">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#statsGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <defs><linearGradient id="statsGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                <defs><linearGradient id="statsGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
                 <path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/>
             </svg>
-            Team Statistics
+            Statistiques de l'équipe
         </h2>
 
         <!-- Performance Cards -->
@@ -59,7 +59,7 @@
                 </div>
                 <div class="stats-card-body">
                     <span class="stats-card-value">#{{ teamRank.rang }}</span>
-                    <span class="stats-card-label">Global Rank</span>
+                    <span class="stats-card-label">Rang global</span>
                 </div>
                 <div class="stats-card-accent rank-accent"></div>
             </div>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="stats-card-body">
                     <span class="stats-card-value">{{ teamRank.ppm }}</span>
-                    <span class="stats-card-label">Pts / Match</span>
+                    <span class="stats-card-label">Pts / match</span>
                 </div>
                 <div class="stats-card-accent ppm-accent"></div>
             </div>
@@ -80,7 +80,7 @@
                 </div>
                 <div class="stats-card-body">
                     <span class="stats-card-value">{{ team.members|length }}</span>
-                    <span class="stats-card-label">Members</span>
+                    <span class="stats-card-label">Membres</span>
                 </div>
                 <div class="stats-card-accent members-accent"></div>
             </div>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="stats-card-body">
                     <span class="stats-card-value">{{ totalMatches }}</span>
-                    <span class="stats-card-label">Total Matches</span>
+                    <span class="stats-card-label">Matchs joués</span>
                 </div>
                 <div class="stats-card-accent matches-accent"></div>
             </div>
@@ -115,7 +115,7 @@
         </div>
 
         <!-- Charts -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr));gap:24px;">
             <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;height:320px;">
                 {{ render_chart(resultsChart) }}
             </div>
@@ -166,7 +166,7 @@
 
     <!-- MEMBERS -->
     <section class="team-members">
-        <h2>Members</h2>
+        <h2>Membres</h2>
 
         <div class="members-grid">
             {% for member in team.members %}
@@ -184,7 +184,7 @@
 
         <div class="tournament-card">
             <h3>Spring Cup</h3>
-            <p>Status : Active</p>
+            <p>Statut : active</p>
         </div>
     </section>
 

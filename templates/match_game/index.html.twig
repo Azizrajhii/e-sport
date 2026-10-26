@@ -1,517 +1,177 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Match Center - Esports League{% endblock %}
+{% block title %}{{ tournoi ? tournoi.nom : 'Match center' }} — e-Sports.tn{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .mc-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .mc-filter { padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid var(--border-strong); background: rgba(148, 163, 184, 0.06); color: var(--muted); font-weight: 600; font-size: 0.875rem; transition: all 0.2s var(--ease); }
+    .mc-filter:hover { color: #fff; border-color: var(--primary); }
+    .mc-filter.active { background: var(--grad); border-color: transparent; color: #fff; box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3); }
+    .mc-filter .n { margin-left: 0.35rem; opacity: 0.75; font-variant-numeric: tabular-nums; }
+
+    .match { display: flex; flex-direction: column; height: 100%; }
+    .match__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+    .match__tournament { color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .match__date { color: var(--muted); white-space: nowrap; }
+    .match__body { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 0.75rem; padding: 1.4rem 1.1rem; }
+    .match__team { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; text-align: center; min-width: 0; }
+    .match__logo { width: 56px; height: 56px; border-radius: 16px; object-fit: cover; background: var(--surface-2); border: 1px solid var(--border); display: grid; place-items: center; color: var(--muted); font-size: 1.2rem; }
+    .match__team strong { color: #fff; font-size: 0.95rem; line-height: 1.2; overflow-wrap: anywhere; }
+    .match__team.win .match__logo { border-color: rgba(16, 185, 129, 0.6); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+    .match__team.win strong { color: #a7f3d0; }
+    .match__team.lose { opacity: 0.6; }
+    .match__score { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: 0.06em; white-space: nowrap; }
+    .match__vs { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--muted-2); padding: 0.4rem 0.8rem; border: 1px dashed var(--border-strong); border-radius: 10px; }
+    .match__foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1.1rem; border-top: 1px solid var(--border); }
+    .match__foot a { font-weight: 600; font-size: 0.875rem; }
+    .status-live { background: rgba(239, 68, 68, 0.18) !important; color: #fecaca !important; }
+    .status-live::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--danger); animation: live-pulse 1.6s infinite; vertical-align: 1px; }
+
+    .standings td, .standings th { padding: 0.75rem 0.9rem; text-align: center; vertical-align: middle; }
+    .standings td:nth-child(2), .standings th:nth-child(2) { text-align: left; }
+    .standings .rank { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(148, 163, 184, 0.12); font-weight: 700; }
+    .standings tr:nth-child(1) .rank { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #111; }
+    .standings tr:nth-child(2) .rank { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #111; }
+    .standings tr:nth-child(3) .rank { background: linear-gradient(135deg, #fdba74, #c2410c); color: #111; }
+    .standings a { color: #fff; font-weight: 600; }
+    .standings .pos { color: #6ee7b7; } .standings .neg { color: #fca5a5; }
+
+    .empty-wrapper { padding: 3rem 1rem; text-align: center; color: var(--muted); }
+    .empty-wrapper i { font-size: 2.2rem; color: var(--primary-light); margin-bottom: 0.75rem; display: block; }
+    .match-col.is-hidden { display: none; }
+</style>
+{% endblock %}
+
+{% macro status_key(statut) -%}
+    {%- set s = statut|lower -%}
+    {{- s in ['finished', 'terminé', 'termine'] ? 'finished' : (s in ['in progress', 'in_progress', 'en cours', 'live'] ? 'live' : (s in ['cancelled', 'canceled', 'annulé'] ? 'cancelled' : 'upcoming')) -}}
+{%- endmacro %}
 
 {% block body %}
-<style>
-/* =========================
-   INNOVATIVE ESPORTS THEME
-=========================*/
-:root {
-    --bg-dark: #020617;
-    --card-bg: rgba(15, 23, 42, 0.65);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    
-    /* Neon Palette */
-    --neon-blue: #3b82f6;
-    --neon-purple: #8b5cf6;
-    --neon-pink: #ec4899;
-    --neon-green: #10b981;
-}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Match center',
+    icon: 'fa-bolt',
+    title: tournoi ? tournoi.nom : 'Match center',
+    subtitle: tournoi ? 'Classement et matchs du tournoi' : 'Chaque match, chaque score, chaque victoire en temps réel.',
+    image: 'img/web/crowd.jpg',
+    actions: tournoi ? [{label: 'Voir le tournoi', url: path('app_tournoi_show', {id: tournoi.id}), icon: 'fa-trophy', style: 'outline'}] : []
+}) }}
 
-body {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+{% set labels = {live: 'En cours', upcoming: 'À venir', finished: 'Terminé', cancelled: 'Annulé'} %}
+{% set badgeClass = {live: 'status-live', upcoming: 'bg-warning', finished: 'bg-success', cancelled: 'bg-secondary'} %}
+{% set counts = {all: match_games|length, live: 0, upcoming: 0, finished: 0} %}
+{% for m in match_games %}
+    {% set k = _self.status_key(m.statut)|trim %}
+    {% if counts[k] is defined %}{% set counts = counts|merge({(k): counts[k] + 1}) %}{% endif %}
+{% endfor %}
 
-/* Background Effects */
-.page-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: 
-        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
-}
-
-/* =========================
-   HERO SECTION
-=========================*/
-.hero-section {
-    position: relative;
-    padding: 100px 20px 60px;
-    text-align: center;
-    overflow: hidden;
-}
-
-.hero-title {
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 1;
-    margin-bottom: 20px;
-    letter-spacing: -2px;
-    background: linear-gradient(135deg, #fff 30%, var(--text-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    position: relative;
-    z-index: 10;
-}
-
-.hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto 40px;
-    position: relative;
-    z-index: 10;
-}
-
-.hero-actions {
-    position: relative;
-    z-index: 10;
-}
-
-/* =========================
-   MATCH GRID
-=========================*/
-.matches-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px 20px 100px;
-}
-
-.matches-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 30px;
-}
-
-/* Innovative Match Card */
-.match-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(20px);
-}
-
-.match-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.match-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
-.match-card:hover::before {
-    opacity: 1;
-}
-
-/* Card Header */
-.card-header {
-    padding: 25px 25px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.tournament-tag {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--neon-blue);
-    background: rgba(59, 130, 246, 0.1);
-    padding: 6px 12px;
-    border-radius: 99px;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.game-tag {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--neon-purple);
-    background: rgba(139, 92, 246, 0.1);
-    padding: 6px 12px;
-    border-radius: 99px;
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.match-date {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Faceoff Section */
-.card-body {
-    padding: 30px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-.team-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    flex: 1;
-}
-
-.team-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-    border: 1px solid var(--border-color);
-    font-size: 1.5rem;
-    color: var(--text-primary);
-}
-
-.team-name {
-    font-weight: 700;
-    font-size: 1rem;
-    line-height: 1.2;
-}
-
-.vs-badge {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: var(--text-secondary);
-    opacity: 0.3;
-    font-style: italic;
-}
-
-.score-badge {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 8px 16px;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 1.2rem;
-    letter-spacing: 2px;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    min-width: 80px;
-    text-align: center;
-}
-
-/* Card Footer */
-.card-footer {
-    padding: 15px 25px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-.status-finished .status-dot { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
-.status-finished span { color: var(--neon-green); }
-
-.status-progress .status-dot { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
-.status-progress span { color: #f59e0b; }
-
-.status-pending .status-dot { background: var(--text-secondary); }
-.status-pending span { color: var(--text-secondary); }
-
-
-/* Buttons */
-.btn-action {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-secondary);
-    transition: all 0.2s;
-    text-decoration: none;
-    border: 1px solid transparent;
-}
-.btn-action:hover {
-    background: var(--text-primary);
-    color: var(--bg-dark);
-}
-
-.btn-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 32px;
-    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
-    color: white;
-    font-weight: 700;
-    border-radius: 16px;
-    text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.btn-cta:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 40px -5px rgba(236, 72, 153, 0.5);
-}
-
-/* Empty State */
-.empty-wrapper {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 100px 20px;
-    background: var(--card-bg);
-    border-radius: 30px;
-    border: 1px dashed var(--border-color);
-}
-.empty-icon {
-    font-size: 4rem;
-    color: var(--text-secondary);
-    opacity: 0.2;
-    margin-bottom: 20px;
-}
-
-/* Classement */
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.section-title i { color: var(--neon-yellow, #eab308); }
-.classement-table-wrapper {
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    overflow-x: auto;
-    margin-bottom: 40px;
-}
-.classement-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-}
-.classement-table th, .classement-table td {
-    padding: 14px 16px;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-}
-.classement-table th {
-    background: rgba(255,255,255,0.03);
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-}
-.classement-table tbody tr:hover {
-    background: rgba(255,255,255,0.02);
-}
-.classement-table .rang { font-weight: 700; color: var(--neon-blue); }
-.classement-table .equipe { text-align: left; font-weight: 600; }
-.classement-table .equipe a { color: var(--text-primary); text-decoration: none; }
-.classement-table .equipe a:hover { color: var(--neon-purple); }
-.classement-table .v { color: var(--neon-green); }
-.classement-table .p { color: var(--neon-pink); }
-.classement-table .diff { font-weight: 600; }
-.classement-table .pts { color: var(--neon-yellow, #eab308); }
-.classement-empty {
-    color: var(--text-secondary);
-    text-align: center;
-    padding: 40px 20px;
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px dashed var(--border-color);
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-    .matches-grid { grid-template-columns: 1fr; }
-    .hero-title { font-size: 2.5rem; }
-    .classement-table th, .classement-table td { padding: 10px 8px; font-size: 0.85rem; }
-}
-</style>
-
-<div class="page-background"></div>
-
-<!-- HERO -->
-<div class="hero-section">
-    <h1 class="hero-title">{% if tournoi %}{{ tournoi.nom }}{% else %}Match Center{% endif %}</h1>
-    <p class="hero-subtitle">{% if tournoi %}Classement et matchs du tournoi{% else %}Track every battle, every score, and every victory in real-time.{% endif %}</p>
-</div>
-
-<!-- CLASSEMENT (pour vue tournoi : affiché dès le début avec toutes les équipes inscrites) -->
-{% if tournoi is defined and tournoi %}
-<div class="matches-container">
-    <h2 class="section-title"><i class="fas fa-trophy"></i> Classement</h2>
-    {% if classement|default([])|length > 0 %}
-    <div class="classement-table-wrapper">
-        <table class="classement-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Équipe</th>
-                    <th>MJ</th>
-                    <th>V</th>
-                    <th>N</th>
-                    <th>P</th>
-                    <th>BP</th>
-                    <th>BC</th>
-                    <th>Diff</th>
-                    <th>Pts</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in classement %}
-                <tr>
-                    <td class="rang">{{ row.rang }}</td>
-                    <td class="equipe"><a href="{{ path('app_equipe_show', {'id': row.equipe.id}) }}">{{ row.equipe.nom }}</a></td>
-                    <td>{{ row.mj }}</td>
-                    <td class="v">{{ row.v }}</td>
-                    <td class="n">{{ row.n }}</td>
-                    <td class="p">{{ row.p }}</td>
-                    <td>{{ row.bp }}</td>
-                    <td>{{ row.bc }}</td>
-                    <td class="diff">{{ row.diff >= 0 ? '+' ~ row.diff : row.diff }}</td>
-                    <td class="pts"><strong>{{ row.pts }}</strong></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p class="classement-empty">Aucune équipe inscrite pour l'instant. Le classement s'affichera ici dès que des équipes seront inscrites au tournoi.</p>
+<div class="container">
+    {% if tournoi %}
+        <section class="mb-5">
+            <h2 class="h3 mb-3"><i class="fas fa-trophy mr-2" style="color:var(--warning)"></i>Classement</h2>
+            {% if classement|default([])|length > 0 %}
+                <div class="card" style="overflow-x:auto">
+                    <table class="table table-hover standings mb-0">
+                        <thead>
+                            <tr><th>#</th><th>Équipe</th><th title="Matchs joués">MJ</th><th title="Victoires">V</th><th title="Nuls">N</th><th title="Défaites">D</th><th title="Buts pour">BP</th><th title="Buts contre">BC</th><th>Diff</th><th>Pts</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in classement %}
+                                <tr>
+                                    <td><span class="rank">{{ row.rang }}</span></td>
+                                    <td><a href="{{ path('app_equipe_show', {'id': row.equipe.id}) }}">{{ row.equipe.nom }}</a></td>
+                                    <td>{{ row.mj }}</td><td>{{ row.v }}</td><td>{{ row.n }}</td><td>{{ row.p }}</td>
+                                    <td>{{ row.bp }}</td><td>{{ row.bc }}</td>
+                                    <td class="{{ row.diff > 0 ? 'pos' : (row.diff < 0 ? 'neg') }}">{{ row.diff > 0 ? '+' }}{{ row.diff }}</td>
+                                    <td><strong style="color:#fff">{{ row.pts }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">Aucune équipe inscrite pour l'instant. Le classement s'affichera dès les premières inscriptions.</p>
+            {% endif %}
+        </section>
     {% endif %}
-</div>
-{% endif %}
 
-<!-- MATCHES -->
-<div class="matches-container">
-    <h2 class="section-title" {% if tournoi %}style="margin-top:40px;"{% endif %}><i class="fas fa-gamepad"></i> Matchs</h2>
-    {% if match_games|length > 0 %}
-        <div class="matches-grid">
-            {% for match_game in match_games %}
-            <div class="match-card">
-                
-                <!-- HEADER -->
-                <div class="card-header">
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        {% if not tournoi %}
-                            <span class="tournament-tag">{{ match_game.tournoi.nom }}</span>
-                        {% endif %}
-                        {% if match_game.tournoi.jeu is defined and match_game.tournoi.jeu %}
-                            <span class="game-tag"><i class="fas fa-gamepad"></i> {{ match_game.tournoi.jeu.nom }}</span>
-                        {% endif %}
-                    <div class="match-date">
-                        <i class="far fa-clock"></i>
-                        {{ match_game.dateMatch|date('d M, H:i') }}
-                    </div>
-                </div>
+    <section>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+            <h2 class="h3 mb-0"><i class="fas fa-gamepad mr-2" style="color:var(--primary-light)"></i>Matchs</h2>
+        </div>
 
-                <!-- BODY -->
-                <div class="card-body">
-                    <!-- Team 1 -->
-                    <div class="team-info">
-                        <div class="team-avatar">
-                            <i class="fas fa-gamepad"></i>
-                        </div>
-                        <div class="team-name">{{ match_game.equipe1.nom }}</div>
-                    </div>
-
-                    <!-- Center -->
-                    {% if match_game.statut == 'Finished' or match_game.statut == 'In Progress' %}
-                        <div class="score-badge">
-                            {{ match_game.scoreTeam1 }} - {{ match_game.scoreTeam2 }}
-                        </div>
-                    {% else %}
-                        <div class="vs-badge">VS</div>
-                    {% endif %}
-
-                    <!-- Team 2 -->
-                    <div class="team-info">
-                        <div class="team-avatar">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <div class="team-name">{{ match_game.equipe2.nom }}</div>
-                    </div>
-                </div>
-
-                <!-- FOOTER -->
-                <div class="card-footer">
-                    <!-- Status -->
-                    <div class="status-indicator status-{{ match_game.statut|lower|replace({' ': '-'}) == 'scheduled' ? 'pending' : match_game.statut|lower|replace({' ': '-'}) }}">
-                        <div class="status-dot"></div>
-                        <span>{{ match_game.statut }}</span>
-                    </div>
-
-                    <!-- Action -->
-                    <a href="{{ path('app_match_game_show', {'id': match_game.id}) }}" class="btn-action" title="View Details">
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-
+        {% if match_games|length > 0 %}
+            <div class="mc-filters" role="tablist" aria-label="Filtrer les matchs">
+                <button type="button" class="mc-filter active" data-filter="all">Tous<span class="n">{{ counts.all }}</span></button>
+                <button type="button" class="mc-filter" data-filter="live">En cours<span class="n">{{ counts.live }}</span></button>
+                <button type="button" class="mc-filter" data-filter="upcoming">À venir<span class="n">{{ counts.upcoming }}</span></button>
+                <button type="button" class="mc-filter" data-filter="finished">Terminés<span class="n">{{ counts.finished }}</span></button>
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-wrapper">
-            <i class="fas fa-gamepad empty-icon"></i>
-            <h2 style="margin-bottom: 10px;">No Matches Found</h2>
-            <p style="color: var(--text-secondary);">The arena is empty. Start a new competition.</p>
-        </div>
-    {% endif %}
+
+            <div class="row g-4">
+                {% for m in match_games %}
+                    {% set key = _self.status_key(m.statut)|trim %}
+                    {% set played = key in ['finished', 'live'] %}
+                    {% set s1 = m.scoreTeam1 ?? 0 %}{% set s2 = m.scoreTeam2 ?? 0 %}
+                    <div class="col-xl-4 col-md-6 match-col" data-status="{{ key }}">
+                        <article class="card match">
+                            <div class="match__head">
+                                <span class="match__tournament" title="{{ m.tournoi.nom }}">{{ m.tournoi.jeu ? m.tournoi.jeu.nom ~ ' · ' }}{{ m.tournoi.nom }}</span>
+                                <span class="match__date"><i class="far fa-clock mr-1"></i>{{ m.dateMatch ? m.dateMatch|date('d/m · H:i') : 'À définir' }}</span>
+                            </div>
+                            <div class="match__body">
+                                {% for side in [{team: m.equipe1, mine: s1, other: s2}, {team: m.equipe2, mine: s2, other: s1}] %}
+                                    {% if loop.index == 2 %}
+                                        {% if played %}<div class="match__score">{{ s1 }} : {{ s2 }}</div>{% else %}<div class="match__vs">VS</div>{% endif %}
+                                    {% endif %}
+                                    <div class="match__team {{ key == 'finished' and side.mine > side.other ? 'win' : (key == 'finished' and side.mine < side.other ? 'lose') }}">
+                                        {% if side.team.logo %}
+                                            <img class="match__logo" src="{{ asset('uploads/teams/' ~ side.team.logo) }}" alt="" loading="lazy">
+                                        {% else %}
+                                            <span class="match__logo"><i class="fas fa-users"></i></span>
+                                        {% endif %}
+                                        <strong>{{ side.team.nom }}</strong>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="match__foot">
+                                <span class="badge {{ badgeClass[key] }}">{{ labels[key] }}</span>
+                                <a href="{{ path('app_match_game_show', {'id': m.id}) }}">Détails <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="text-muted text-center mt-4 d-none" id="mc-empty">Aucun match dans cette catégorie.</p>
+        {% else %}
+            <div class="card empty-wrapper">
+                <i class="fas fa-gamepad"></i>
+                <h3 class="h5">Aucun match pour le moment</h3>
+                <p class="mb-0">Les matchs apparaîtront ici dès qu'ils seront programmés.</p>
+            </div>
+        {% endif %}
+    </section>
 </div>
 
-{% if tournoi is defined and tournoi %}
-  {% include 'components/_chatbot_widget.html.twig' with {'tournoi_id': tournoi.id} %}
+{% if tournoi %}
+    {% include 'components/_chatbot_widget.html.twig' with {'tournoi_id': tournoi.id} %}
 {% endif %}
+{% endblock %}
 
+{% block javascripts %}
+<script>
+document.querySelectorAll('.mc-filter').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        document.querySelectorAll('.mc-filter').forEach(function (b) { b.classList.toggle('active', b === btn); });
+        var f = btn.dataset.filter, shown = 0;
+        document.querySelectorAll('.match-col').forEach(function (col) {
+            var show = f === 'all' || col.dataset.status === f;
+            col.classList.toggle('is-hidden', !show);
+            if (show) { shown++; col.classList.add('is-visible'); }
+        });
+        document.getElementById('mc-empty').classList.toggle('d-none', shown > 0);
+    });
+});
+</script>
 {% endblock %}

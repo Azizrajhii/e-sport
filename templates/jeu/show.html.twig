@@ -2,7 +2,7 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ jeu.nom }} - e-Sports{% endblock %}
+{% block title %}{{ jeu.nom }} — e-Sports.tn{% endblock %}
 
 {% block body %}
 <section class="game-detail">
@@ -11,7 +11,7 @@
             <div class="game-detail-image">
                 {# determine image path from game name (slug) and show it with graceful fallback #}
                 {% set slug = jeu.nom ? (jeu.nom|lower|replace({' ':'-','_':''})) : 'placeholder' %}
-                {% set imagePath = 'img/games/' ~ slug ~ '.png' %}
+                {% set imagePath = jeu.image ?: ('img/games/' ~ slug ~ '.png') %}
                 <img src="{{ asset(imagePath) }}" alt="{{ jeu.nom }}" onerror="this.style.display='none'">
                 {% if not jeu.nom %}
                     <div class="placeholder-image-large">{{ jeu.nom }}</div>
@@ -98,7 +98,7 @@
     .placeholder-image-large {
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -109,14 +109,14 @@
     .game-detail-info h1 {
         font-size: 3em;
         margin-bottom: 10px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
     .publisher {
-        color: #ff006e;
+        color: #6366f1;
         font-size: 1.1em;
         margin-bottom: 15px;
     }
@@ -155,7 +155,7 @@
     .stat-number {
         font-size: 2em;
         font-weight: bold;
-        color: #ff006e;
+        color: #6366f1;
     }
 
     .stat-label {
@@ -192,8 +192,8 @@
 
     .tournament-card:hover {
         transform: translateY(-5px);
-        border-color: #ff006e;
-        box-shadow: 0 15px 35px rgba(255, 0, 110, 0.2);
+        border-color: #6366f1;
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
     }
 
     .tournament-header {
@@ -249,17 +249,17 @@
 
     .btn-secondary {
         display: inline-block;
-        background: rgba(255, 0, 110, 0.2);
-        color: #ff006e;
+        background: rgba(99, 102, 241, 0.2);
+        color: #6366f1;
         padding: 10px 25px;
         border-radius: 20px;
         text-decoration: none;
-        border: 1px solid #ff006e;
+        border: 1px solid #6366f1;
         transition: all 0.3s ease;
     }
 
     .btn-secondary:hover {
-        background: #ff006e;
+        background: #6366f1;
         color: white;
     }
 

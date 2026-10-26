@@ -71,7 +71,7 @@ h2{
 }
 
 .login-btn{
-    background:linear-gradient(90deg,#635bff,#a52bf9);
+    background:linear-gradient(90deg,#6366f1,#a52bf9);
     color:white;
     width:100%;
     padding:12px;
@@ -83,7 +83,7 @@ h2{
 
 .login-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(99,91,255,.4);
+    box-shadow:0 10px 20px rgba(99, 102, 241,.4);
 }
 
 .login-btn:disabled{
@@ -95,7 +95,7 @@ h2{
 .register-link{
     text-align:center;
     margin-top:20px;
-    color:#635bff;
+    color:#6366f1;
     display:block;
     text-decoration:none;
     transition:.3s;
@@ -148,7 +148,7 @@ h2{
 
     <div class="verify-box">
 
-        <h2>Face Recognition Login</h2>
+        <h2>Connexion par reconnaissance faciale</h2>
 
         {% if error %}
             <div class="alert alert-danger">
@@ -161,15 +161,15 @@ h2{
             <canvas id="canvas"></canvas>
         </div>
 
-        <p class="status-text" id="status">Loading face detection models...</p>
+        <p class="status-text" id="status">Chargement des modèles de détection…</p>
 
         <button class="login-btn" id="loginBtn" disabled>
             <span class="loading-spinner" style="display:none;"></span>
-            <span id="btnText">Login with Face</span>
+            <span id="btnText">Se connecter avec son visage</span>
         </button>
 
         <a href="{{ path('app_login') }}" class="register-link">
-            Back to Login
+            Retour à la connexion
         </a>
 
     </div>

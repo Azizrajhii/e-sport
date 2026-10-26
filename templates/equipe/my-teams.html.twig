@@ -1,74 +1,78 @@
 {% extends 'base.html.twig' %}
-{% block title %}My Teams{% endblock %}
+{% block title %}Mes équipes — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Mon espace',
+    icon: 'fa-shield-alt',
+    title: 'Mes équipes',
+    subtitle: 'Les équipes que tu diriges et celles dont tu fais partie.',
+    image: 'img/web/hero-gamer.jpg',
+    actions: [{label: 'Créer une équipe', url: path('app_equipe_new'), icon: 'fa-plus'}]
+}) }}
 <div class="my-teams-page">
-
-
-
-    <h1>My Teams</h1>
 
     <!-- STATS -->
     <section class="stats">
         <div class="stat-card">
             <span>👥</span>
             <h3>{{ totalTeams }}</h3>
-            <p>Total Teams</p>
+            <p>Équipes</p>
         </div>
 
         <div class="stat-card">
             <span>👑</span>
             <h3>{{ ownedTeams|length }}</h3>
-            <p>Teams Owned</p>
+            <p>Équipes dirigées</p>
         </div>
 
         <div class="stat-card">
             <span>🎮</span>
             <h3>{{ joinedTeams|length }}</h3>
-            <p>Teams Joined</p>
+            <p>Équipes rejointes</p>
         </div>
 
         <div class="stat-card">
             <span>🏆</span>
             <h3>{{ globalWinRate }}%</h3>
-            <p>Global Win Rate</p>
+            <p>Taux de victoire</p>
         </div>
     </section>
 
     <!-- OWNER TEAMS -->
     <section class="team-section">
-        <h2>Teams I Lead</h2>
+        <h2>Équipes que je dirige</h2>
 
         <div class="teams-grid">
             {% for team in ownedTeams %}
                 <a href="{{ path('app_equipe_dashboard', {id: team.id}) }}" class="team-card leader">
                     <div class="team-top">
-                        <span class="badge">Owner</span>
+                        <span class="badge">Capitaine</span>
                     </div>
                     <h3>{{ team.nom }}</h3>
                     <p>{{ team.members|length }} Members</p>
                 </a>
             {% else %}
-                <p>No teams created yet.</p>
+                <p>Tu n'as pas encore créé d'équipe.</p>
             {% endfor %}
         </div>
     </section>
 
     <!-- MEMBER TEAMS -->
     <section class="team-section">
-        <h2>Teams I Play In</h2>
+        <h2>Équipes dont je fais partie</h2>
 
         <div class="teams-grid">
             {% for team in joinedTeams %}
                 <a href="{{ path('app_equipe_dashboard', {id: team.id}) }}" class="team-card">
                     <div class="team-top">
-                        <span class="badge player">Member</span>
+                        <span class="badge player">Membre</span>
                     </div>
                     <h3>{{ team.nom }}</h3>
                     <p>{{ team.members|length }} Members</p>
                 </a>
             {% else %}
-                <p>No joined teams.</p>
+                <p>Tu n'as rejoint aucune équipe.</p>
             {% endfor %}
         </div>
     </section>

@@ -11,7 +11,7 @@
 }
 
 body{
-    background: linear-gradient(90deg,#b8325b,#0b4fa3);
+    background: transparent;
 }
 
 .main-wrapper{
@@ -24,7 +24,8 @@ body{
 
 .register-box{
     width:500px;
-    background:white;
+    max-width:100%;
+    background:#121a2e;
     border-radius:6px;
     padding:40px;
     box-shadow:0 0 30px rgba(0,0,0,.3);
@@ -47,7 +48,7 @@ h2{
 
 .form-control:focus{
     box-shadow:none;
-    border-color:#635bff;
+    border-color:#6366f1;
     padding-left:8px;
 }
 
@@ -92,7 +93,7 @@ h2{
 
 <div class="register-box">
 
-    <h2>Disable Two-Factor Authentication</h2>
+    <h2>Désactiver l'authentification à deux facteurs</h2>
 
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
@@ -102,24 +103,24 @@ h2{
         <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
 
-    <p class="text-center mb-4">Are you sure you want to disable two-factor authentication? Your account will be less secure.</p>
+    <p class="text-center mb-4">Veux-tu vraiment désactiver l'authentification à deux facteurs ? Ton compte sera moins sécurisé.</p>
 
     <form method="post">
         
         <div class="mb-3">
-            <label for="password" class="form-label">Enter your password to confirm</label>
+            <label for="password" class="form-label">Entre ton mot de passe pour confirmer</label>
             <input type="password" 
                    name="password" 
                    id="password"
                    class="form-control" 
-                   placeholder="Password"
+                   placeholder="Mot de passe"
                    required 
                    autofocus>
         </div>
 
-        <button type="submit" class="btn btn-danger mb-3">Disable 2FA</button>
+        <button type="submit" class="btn btn-danger mb-3">Désactiver la 2FA</button>
         
-        <a href="{{ path('app_home') }}" class="btn-secondary">Cancel</a>
+        <a href="{{ path('app_home') }}" class="btn-secondary">Annuler</a>
 
     </form>
 

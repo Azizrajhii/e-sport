@@ -2,56 +2,12 @@
 
 {% block extra_css %}
 <style>
-    .stat-card {
-        text-align: center;
-        padding: 1.5rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-        z-index: -1;
-    }
-
-    .stat-card .number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-card .label {
-        color: #94a3b8;
-        font-weight: 500;
-        font-size: 0.875rem;
-    }
 
     .team-logo-mini {
         width: 32px;
         height: 32px;
         border-radius: 6px;
         object-fit: cover;
-    }
-
-    .action-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: var(--radius-sm);
-        border: none;
-        background: rgba(148, 163, 184, 0.1);
-        color: #94a3b8;
-        cursor: pointer;
-        transition: all 0.2s ease;
     }
 </style>
 {% endblock %}
@@ -125,11 +81,11 @@
                         </td>
                         <td class="text-end">
                             <div class="d-flex gap-2 justify-content-end">
-                                <a href="{{ path('admin_jeu_show', {'id': jeu.id}) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
-                                <a href="{{ path('admin_jeu_edit', {'id': jeu.id}) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="{{ path('admin_jeu_show', {'id': jeu.id}) }}" class="action-btn view" title="View"><i class="fas fa-eye"></i></a>
+                                <a href="{{ path('admin_jeu_edit', {'id': jeu.id}) }}" class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></a>
                                 <form method="post" action="{{ path('admin_jeu_delete', {'id': jeu.id}) }}" class="d-inline" onsubmit="return confirm('Delete this game?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ jeu.id) }}">
-                                    <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="action-btn delete" title="Delete"><i class="fas fa-trash"></i></button>
                                 </form>
                             </div>
                         </td>

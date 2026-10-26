@@ -77,7 +77,7 @@ h2 {
 }
 
 .btn-primary {
-    background: linear-gradient(90deg, #635bff, #a52bf9);
+    background: linear-gradient(90deg, #6366f1, #a52bf9);
     border: none;
     padding: 12px 30px;
     width: 100%;
@@ -86,7 +86,7 @@ h2 {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(99, 91, 255, .4);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, .4);
 }
 
 .btn-danger {
@@ -125,7 +125,7 @@ h2 {
             
             {% if isFaceEnabled %}
                 <div class="alert alert-success">
-                    Face recognition is currently enabled for your account.
+                    La reconnaissance faciale est activée sur ton compte.
                 </div>
             {% endif %}
 
@@ -134,7 +134,7 @@ h2 {
                 <canvas id="canvas"></canvas>
             </div>
 
-            <p class="status-text" id="status">Loading face detection models...</p>
+            <p class="status-text" id="status">Chargement des modèles de détection…</p>
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             
@@ -143,11 +143,11 @@ h2 {
             </button>
 
             <button class="btn btn-danger" id="disableBtn" {% if not isFaceEnabled %}style="display:none"{% endif %}>
-                Disable Face Recognition
+                Désactiver la reconnaissance faciale
             </button>
 
-            <a href="{{ path('app_profile') }}" class="d-block text-center mt-3" style="color: #635bff;">
-                Back to Profile
+            <a href="{{ path('app_profile') }}" class="d-block text-center mt-3" style="color: #6366f1;">
+                Retour au profil
             </a>
         </div>
     </div>

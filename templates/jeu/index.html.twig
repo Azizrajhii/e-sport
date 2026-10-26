@@ -2,27 +2,30 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Jeux - e-Sports{% endblock %}
+{% block title %}Jeux — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Jeux',
+    icon: 'fa-gamepad',
+    title: 'Nos jeux',
+    subtitle: 'Découvre les jeux sur lesquels tu peux affronter les meilleures équipes.',
+    image: 'img/web/fps-player.jpg'
+}) }}
 <section class="games-section">
     <div class="container">
-        <div class="section-header">
-            <h1>Nos Jeux</h1>
-            <p>Découvrez les jeux où vous pouvez compétitionner</p>
-        </div>
 
         <div class="games-grid">
             {% for jeu in jeux %}
                 {# build a slug from the game name to locate an image in public/img/games/ #}
                 {% set slug = jeu.nom ? (jeu.nom|lower|replace({' ':'-','_':''})) : 'placeholder' %}
-                {% set imagePath = 'img/games/' ~ slug ~ '.png' %}
+                {% set imagePath = jeu.image ?: ('img/games/' ~ slug ~ '.png') %}
 
                 <div class="game-card">
                     <div class="game-image">
                         <img src="{{ asset(imagePath) }}" alt="{{ jeu.nom }}" onerror="this.style.display='none'">
                         {% if not jeu.nom %}
-                            <div class="placeholder-image">No name</div>
+                            <div class="placeholder-image">Sans nom</div>
                         {% endif %}
                         <span class="game-badge">{{ jeu.genre }}</span>
                     </div>
@@ -54,7 +57,7 @@
     .section-header h1 {
         font-size: 3em;
         margin-bottom: 10px;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -77,15 +80,15 @@
 
     .game-card:hover {
         transform: translateY(-10px);
-        border-color: #ff006e;
-        box-shadow: 0 20px 40px rgba(255, 0, 110, 0.2);
+        border-color: #6366f1;
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
     }
 
     .game-image {
         position: relative;
         height: 250px;
         overflow: hidden;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
     }
 
     .game-image img {
@@ -133,7 +136,7 @@
     }
 
     .publisher {
-        color: #ff006e;
+        color: #6366f1;
         font-size: 0.9em;
         margin: 5px 0;
     }
@@ -153,7 +156,7 @@
 
     .btn-primary {
         display: inline-block;
-        background: linear-gradient(135deg, #ff006e, #8338ec);
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
         padding: 12px 30px;
         border-radius: 25px;
@@ -167,7 +170,7 @@
 
     .btn-primary:hover {
         transform: scale(1.05);
-        box-shadow: 0 10px 25px rgba(255, 0, 110, 0.3);
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
     }
 </style>
 {% endblock %}

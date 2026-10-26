@@ -61,13 +61,13 @@
     }
 
     .form-control-modern:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241,0.15);
         outline: none;
     }
 
     .btn-modern {
-        background: linear-gradient(to right, #667eea, #9f7aea);
+        background: linear-gradient(to right, #6366f1, #9f7aea);
         border: none;
         padding: 12px;
         border-radius: 8px;
@@ -88,7 +88,7 @@
         text-align: center;
         margin-top: 20px;
         font-size: 14px;
-        color: #667eea;
+        color: #6366f1;
         text-decoration: none;
     }
 
@@ -113,9 +113,9 @@
 <div class="reset-wrapper">
     <div class="reset-card">
 
-        <h1>Forgot Your Password?</h1>
+        <h1>Mot de passe oublié ?</h1>
         <p class="subtitle">
-            Enter your email address and we will send you a reset link.
+            Entre ton adresse email, on t'envoie un lien de réinitialisation.
         </p>
 
         {% for message in app.flashes('reset_password_error') %}
@@ -130,12 +130,12 @@
         
 
         <div class="form-group-modern">
-            <label class="form-label-modern">Email Address</label>
+            <label class="form-label-modern">Adresse email</label>
 
             {{ form_widget(requestForm.email, {
                 attr: {
                     class: 'form-control-modern',
-                    placeholder: 'Enter your email'
+                    placeholder: 'Ton email'
                 }
             }) }}
 
@@ -143,13 +143,13 @@
         </div>
 
         <button type="submit" class="btn-modern">
-            Send Reset Email
+            Envoyer le lien
         </button>
 
         {{ form_end(requestForm) }}
 
         <a href="{{ path('app_login') }}" class="back-link">
-            Back to login
+            Retour à la connexion
         </a>
 
     </div>

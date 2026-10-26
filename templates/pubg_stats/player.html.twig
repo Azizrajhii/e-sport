@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ player.attributes.name }} - PUBG Stats{% endblock %}
+{% block title %}{{ player.attributes.name }} · Stats PUBG — e-Sports.tn{% endblock %}
 
 {% block body %}
 <style>
@@ -233,7 +233,7 @@
                             </tr>
                             <tr>
                                 <td>Dégâts Moyens</td>
-                                <td>{{ stats.squad.damageDealt|number_format(0) ?? 0 }}</td>
+                                <td>{{ (stats.squad.damageDealt ?? 0)|number_format(0) }}</td>
                             </tr>
                         </table>
                     {% endif %}

@@ -1,34 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}Blog — e-Sports.tn{% endblock %}
 
 {% block body %}
-<section class="breadcrumb breadcrumb_bg">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb_iner text-center">
-                    <div class="breadcrumb_iner_item">
-                        <h2>What's new</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Actualités', icon: 'fa-newspaper',
+    title: 'Le blog',
+    subtitle: 'Résultats, guides et nouveautés de la scène e-sport tunisienne.',
+    image: 'img/web/crowd.jpg'
+}) }}
 
-<section class="blog_area section_padding" style="background-color: #ffffff; padding: 60px 0;">
+<section class="blog_area section_padding" style="background-color: #121a2e; padding: 60px 0;">
     <div class="container">
 
         <!-- Flash Messages -->
         {% for message in app.flashes('success') %}
-            <div class="alert alert-success mb-4" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 6px; padding: 10px;">
+            <div class="alert alert-success mb-4" style="background-color: rgba(16, 185, 129, 0.12); color: #a7f3d0; border: 1px solid #c3e6cb; border-radius: 6px; padding: 10px;">
                 {{ message }}
             </div>
         {% endfor %}
         
         {% for message in app.flashes('error') %}
-            <div class="alert alert-danger mb-4" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 6px; padding: 10px;">
+            <div class="alert alert-danger mb-4" style="background-color: rgba(239, 68, 68, 0.12); color: #fecaca; border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 6px; padding: 10px;">
                 {{ message }}
             </div>
         {% endfor %}
@@ -39,7 +32,7 @@
                 <!-- Title search -->
                 <div class="col-sm-6 col-md-6">
                     <input type="text" name="title" class="form-control form-control-lg" 
-                           placeholder="Search by title..." 
+                           placeholder="Rechercher par titre…" 
                            value="{{ app.request.get('title') }}">
                 </div>
 
@@ -52,7 +45,7 @@
                 <!-- Search button -->
                 <div class="col-sm-2 col-md-2 d-grid">
                     <button class="btn btn-primary btn-lg" type="submit">
-                        <i class="bi bi-search"></i> Search
+                        <i class="bi bi-search"></i> Rechercher
                     </button>
                 </div>
             </form>
@@ -66,22 +59,16 @@
 
                             <!-- LEFT: Image -->
                             <div class="blog-img-wrapper" style="flex: 0 0 35%; min-width: 250px;">
-                                {% if blog.content %}
-                                    <img src="{{ blog.content}}"
+                                {% set img = blog.imageName ?: 'crowd.jpg' %}{% set imgSrc = (img starts with 'http' or img starts with '/') ? img : asset('img/web/' ~ img) %}
+                                    <img src="{{ imgSrc }}"
                                          class="img-fluid h-100 w-100"
                                          style="object-fit: cover;"
                                          alt="{{ blog.title }}">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/400x300"
-                                         class="img-fluid h-100 w-100"
-                                         style="object-fit: cover;"
-                                         alt="No Image">
-                                {% endif %}
                             </div>
 
                             <!-- RIGHT: Content -->
                             <div class="blog-content-wrapper p-4" style="flex: 1;">
-                                <h1 class="mb-2" style="color: #000000; font-weight: bold;">{{ blog.title }}</h1>
+                                <h1 class="mb-2" style="color: #e2e8f0; font-weight: bold;">{{ blog.title }}</h1>
 
                                 {% if blog.category %}
                                     <p class="text-muted mb-1">{{ blog.category }}</p>
@@ -96,7 +83,7 @@
                                     {% endfor %}
                                 </div>
 
-                                <a href="{{ path('app_blog_show', {'id': blog.id}) }}" class="btn btn-primary mt-2">Read More</a>
+                                <a href="{{ path('app_blog_show', {'id': blog.id}) }}" class="btn btn-primary mt-2">Lire la suite</a>
 
                                 <!-- Comments Toggle Button -->
                                 <button class="btn btn-link mt-3 p-0" type="button" onclick="toggleComments('comments-{{ blog.id }}')">
@@ -104,23 +91,23 @@
                                 </button>
 
                                 <!-- Comments Section -->
-                                <div id="comments-{{ blog.id }}" class="mt-3" style="display: none; border-top: 1px solid #ddd; padding-top: 15px;">
+                                <div id="comments-{{ blog.id }}" class="mt-3" style="display: none; border-top: 1px solid rgba(148, 163, 184, 0.18); padding-top: 15px;">
                                     
                                     {% for comment in blog.comments %}
-                                        <div class="comment mb-2" style="color: #000000;">
+                                        <div class="comment mb-2" style="color: #e2e8f0;">
                                             <strong>{{ comment.user.nom }}</strong>:
                                             {{ comment.content }}
-                                          <small class="ms-1" style="color: #000000;">{{ comment.createdAt|ago }}</small>
+                                          <small class="ms-1" style="color: #e2e8f0;">{{ comment.createdAt|ago }}</small>
                                         </div>
                                     {% else %}
-                                        <p style="color: #000000;">No comments yet.</p>
+                                        <p style="color: #e2e8f0;">Aucun commentaire pour le moment.</p>
                                     {% endfor %}
 
                                     {% if app.user %}
                                         <!-- Formulaire de commentaire avec reCAPTCHA -->
                                         <form action="{{ path('app_blog_comment', {'id': blog.id}) }}" method="POST" class="mt-3">
                                             <div class="mb-2">
-                                                <textarea name="content" class="form-control" rows="2" placeholder="Write your comment..." required></textarea>
+                                                <textarea name="content" class="form-control" rows="2" placeholder="Écris ton commentaire…" required></textarea>
                                             </div>
                                             
                                             <!-- 🔐 reCAPTCHA Widget -->
@@ -128,10 +115,10 @@
                                                 <div class="g-recaptcha" data-sitekey="{{ app.request.server.get('EWZ_RECAPTCHA_SITE_KEY') | default('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI') }}"></div>
                                             </div>
                                             
-                                            <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+                                            <button type="submit" class="btn btn-primary btn-sm">Publier</button>
                                         </form>
                                     {% else %}
-                                        <p class="text-muted mt-2"><em>Login to comment.</em></p>
+                                        <p class="text-muted mt-2"><em>Connecte-toi pour commenter.</em></p>
                                     {% endif %}
                                 </div>
 
@@ -140,7 +127,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p class="text-center w-100">No blogs found.</p>
+                <p class="text-center w-100">Aucun article trouvé.</p>
             {% endif %}
         </div>
 
@@ -194,24 +181,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* Style pour les commentaires */
 .comment {
-    background-color: #f8f9fa;
+    background-color: #0f1529;
     padding: 8px;
     border-radius: 6px;
     margin-bottom: 8px;
 }
 
 .comment:hover {
-    background-color: #e9ecef;
+    background-color: #0f1529;
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #6366f1;
+    border-color: #6366f1;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background-color: #4f46e5;
+    border-color: #4f46e5;
 }
 
 .alert {
@@ -246,30 +233,30 @@ document.addEventListener('DOMContentLoaded', function() {
 .navigation .pagination li span {
     display: inline-block;
     padding: 8px 12px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    color: #007bff;
+    background-color: #0f1529;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #6366f1;
     text-decoration: none;
     border-radius: 4px;
     transition: all 0.3s;
 }
 
 .navigation .pagination li.active span {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #6366f1;
+    border-color: #6366f1;
     color: white;
 }
 
 .navigation .pagination li a:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-    color: #0056b3;
+    background-color: #0f1529;
+    border-color: rgba(148, 163, 184, 0.18);
+    color: #4f46e5;
 }
 
 .navigation .pagination li.disabled span {
-    color: #6c757d;
-    background-color: #f8f9fa;
-    border-color: #dee2e6;
+    color: #94a3b8;
+    background-color: #0f1529;
+    border-color: rgba(148, 163, 184, 0.18);
     cursor: not-allowed;
 }
 </style>
@@ -277,11 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
     <div style="background:#6366f1; color:white; padding:12px 16px; border-radius:12px 12px 0 0; font-weight:bold;">
         🤖 Blog Assistant
     </div>
-    <div id="chat-messages" style="background:#f9f9f9; height:280px; overflow-y:auto; padding:12px; border-left:1px solid #ddd; border-right:1px solid #ddd; color:#000;">
-        <p style="color:#888; font-size:13px;">Ask me anything about the blog posts!</p>
+    <div id="chat-messages" style="background:#0f1529; height:280px; overflow-y:auto; padding:12px; border-left:1px solid rgba(148, 163, 184, 0.18); border-right:1px solid rgba(148, 163, 184, 0.18); color:#e2e8f0;">
+        <p style="color:#94a3b8; font-size:13px;">Pose-moi une question sur les articles du blog !</p>
     </div>
-    <div style="display:flex; border:1px solid #ddd; border-radius:0 0 12px 12px; overflow:hidden;">
-        <input id="chat-input" type="text" placeholder="Search or ask..."
+    <div style="display:flex; border:1px solid rgba(148, 163, 184, 0.18); border-radius:0 0 12px 12px; overflow:hidden;">
+        <input id="chat-input" type="text" placeholder="Rechercher ou demander…"
                style="flex:1; padding:10px; border:none; outline:none;" />
         <button onclick="sendMessage()" 
                 style="background:#6366f1; color:white; border:none; padding:10px 16px; cursor:pointer;">
@@ -295,7 +282,7 @@ async function sendMessage() {
     const messages = document.getElementById('chat-messages');
     const userText = input.value.trim();
     if (!userText) return;
-    messages.innerHTML += `<p style="color:#000;"><strong>You:</strong> ${userText}</p>`;
+    messages.innerHTML += `<p style="color:#e2e8f0;"><strong>You:</strong> ${userText}</p>`;
     input.value = '';
     messages.innerHTML += `<p id="typing" style="color:#aaa;">AI is thinking...</p>`;
     messages.scrollTop = messages.scrollHeight;
@@ -307,7 +294,7 @@ async function sendMessage() {
         });
         const data = await res.json();
         document.getElementById('typing')?.remove();
-        messages.innerHTML += `<p style="color:#000;"><strong>🤖 AI:</strong> ${data.reply}</p>`;
+        messages.innerHTML += `<p style="color:#e2e8f0;"><strong>🤖 AI:</strong> ${data.reply}</p>`;
     } catch (e) {
         document.getElementById('typing')?.remove();
         messages.innerHTML += `<p style="color:red;">Error contacting AI.</p>`;

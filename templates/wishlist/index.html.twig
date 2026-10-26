@@ -1,15 +1,18 @@
 {% extends 'base.html.twig' %}
-{% block title %}Ma Wishlist{% endblock %}
+{% block title %}Ma wishlist — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Boutique',
+    icon: 'fa-heart',
+    title: 'Ma wishlist',
+    subtitle: items|length ~ " produit(s) sauvegardé(s)",
+    image: 'img/web/product-mousepad.jpg'
+}) }}
 <section class="section_padding" style="min-height: 80vh;">
     <div class="container">
 
         <div class="text-center mb-5">
-            <h2 style="color: #fff; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">
-                ❤️ Ma <span style="background: linear-gradient(90deg, #ef4444, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Wishlist</span>
-            </h2>
-            <p style="color: #64748b;">{{ items|length }} produit(s) sauvegardé(s)</p>
         </div>
 
         {% for message in app.flashes('success') %}
@@ -23,7 +26,7 @@
             <div style="text-align: center; padding: 80px 20px;">
                 <p style="font-size: 4rem;">💔</p>
                 <h4 style="color: #475569;">Votre wishlist est vide</h4>
-                <a href="{{ path('app_product_index') }}" class="btn_1 mt-3">Découvrir les produits</a>
+                <a href="{{ path('app_product_index2') }}" class="btn_1 mt-3">Découvrir les produits</a>
             </div>
         {% else %}
             <div class="row">
@@ -56,7 +59,7 @@
                             </p>
 
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                                <span style="background: linear-gradient(90deg, #ef4444, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.3rem; font-weight: 900;">
+                                <span style="background: linear-gradient(90deg, #818cf8, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.3rem; font-weight: 900;">
                                     {{ item.product.price|number_format(2, ',', ' ') }} TND
                                 </span>
                                 <span style="color: {% if item.product.stock > 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 0.8rem; font-weight: 700;">

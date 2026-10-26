@@ -16,11 +16,11 @@ class Equipe1Type extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Team nom',
+                'label' => 'Nom de l\'équipe',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('maxMembers', IntegerType::class, [
-                'label' => 'Max Members',
+                'label' => 'Membres max',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('logo', FileType::class, [

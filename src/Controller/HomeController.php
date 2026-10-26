@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Blog;
 use App\Entity\Equipe;
+use App\Entity\Jeu;
 use App\Entity\MatchGame;
+use App\Entity\Tournoi;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +22,46 @@ public function index(EntityManagerInterface $entityManager, ProductRepository $
     $ranking = $this->computeGlobalRanking($entityManager);
     $topSales = $productRepository->findTopSales(3);
 
+    // Featured tournaments: running ones first, then the next to start
+    $tournois = $entityManager->getRepository(Tournoi::class)->createQueryBuilder('t')
+        ->where('t.statut != :done')
+        ->setParameter('done', 'Terminé')
+        ->orderBy('t.date_debut', 'ASC')
+        ->setMaxResults(3)
+        ->getQuery()
+        ->getResult();
+
+    $jeux = $entityManager->getRepository(Jeu::class)->findBy(['statut' => 'ACTIVE'], ['id' => 'ASC'], 6);
+
+    $recentMatches = $entityManager->getRepository(MatchGame::class)->createQueryBuilder('m')
+        ->where('LOWER(m.statut) = :finished')
+        ->setParameter('finished', 'finished')
+        ->orderBy('m.dateMatch', 'DESC')
+        ->setMaxResults(4)
+        ->getQuery()
+        ->getResult();
+
+    $blogs = $entityManager->getRepository(Blog::class)->findBy([], ['createdAt' => 'DESC'], 3);
+
+    $counters = [
+        'tournois' => $entityManager->getRepository(Tournoi::class)->count([]),
+        'equipes' => $entityManager->getRepository(Equipe::class)->count([]),
+        'joueurs' => $entityManager->getRepository(User::class)->count([]),
+        'cagnotte' => (float) $entityManager->getRepository(Tournoi::class)->createQueryBuilder('t')
+            ->select('COALESCE(SUM(t.cagnotte), 0)')
+            ->getQuery()
+            ->getSingleScalarResult(),
+    ];
+
     return $this->render('home/index.html.twig', [
         'controller_name' => 'HomeController',
         'ranking' => $ranking,
         'topSales' => $topSales,
+        'tournois' => $tournois,
+        'jeux' => $jeux,
+        'recentMatches' => $recentMatches,
+        'blogs' => $blogs,
+        'counters' => $counters,
     ]);
 }
 

@@ -148,7 +148,7 @@ final class BlogController extends AbstractController
 
 $user = $this->getUser();
 if (!$user instanceof User) {
-    $this->addFlash('error', 'You must be logged in to comment.');
+    $this->addFlash('error', 'Tu dois être connecté pour commenter.');
     return $this->redirectToRoute('app_blog_user_index');
 }
 
@@ -156,7 +156,7 @@ if (!$user instanceof User) {
         $recaptchaResponse = $request->request->get('g-recaptcha-response');
         
         if (!$recaptchaResponse) {
-            $this->addFlash('error', 'Please complete the reCAPTCHA verification.');
+            $this->addFlash('error', 'Merci de valider le reCAPTCHA.');
             return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
         }
 
@@ -176,17 +176,17 @@ if (!$user instanceof User) {
             
             if (!isset($result['success']) || $result['success'] !== true) {
                 $errorCodes = isset($result['error-codes']) ? implode(', ', $result['error-codes']) : 'Unknown error';
-                $this->addFlash('error', 'reCAPTCHA verification failed. Please try again. (Erreur: ' . $errorCodes . ')');
+                $this->addFlash('error', 'La vérification reCAPTCHA a échoué. Réessaie. (Erreur : ' . $errorCodes . ')');
                 return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
             }
             
             if (isset($result['score']) && $result['score'] < 0.5) {
-                $this->addFlash('error', 'Suspicious activity detected. Your comment has been rejected.');
+                $this->addFlash('error', 'Activité suspecte détectée : ton commentaire a été refusé.');
                 return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
             }
             
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Error validating reCAPTCHA. Please try again.');
+            $this->addFlash('error', 'Erreur lors de la vérification reCAPTCHA. Réessaie.');
             return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
         }
 
@@ -202,7 +202,7 @@ if (!$user instanceof User) {
             $em->persist($comment);
             $em->flush();
             
-            $this->addFlash('success', 'Your comment has been added successfully.');
+            $this->addFlash('success', 'Ton commentaire a été publié.');
         }
 
         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
@@ -216,13 +216,13 @@ if (!$user instanceof User) {
         
         $user = $this->getUser();
 if (!$user instanceof User) {
-    $this->addFlash('error', 'You must be logged in to rate.');
+    $this->addFlash('error', 'Tu dois être connecté pour noter.');
     return $this->redirectToRoute('app_blog_user_index');
 }
 
         $value = (int)$request->request->get('value');
         if ($value < 1 || $value > 5) {
-            $this->addFlash('error', 'Invalid rating value. Must be between 1 and 5.');
+            $this->addFlash('error', 'Note invalide : elle doit être entre 1 et 5.');
             return $this->redirectToRoute('app_blog_user_index');
         }
 
@@ -249,7 +249,7 @@ if (!$user instanceof User) {
             $this->addFlash('success', $message);
 
         } catch (\Exception $e) {
-            $this->addFlash('error', 'An error occurred while saving your rating. Please try again.');
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'enregistrement de ta note. Réessaie.');
         }
 
         return $this->redirectToRoute('app_blog_user_index');
@@ -262,12 +262,12 @@ if (!$user instanceof User) {
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
-            return $this->json(['error' => 'You must be logged in to rate.'], 403);
+            return $this->json(['error' => 'Tu dois être connecté pour noter.'], 403);
         }
 
         $value = (int)$request->request->get('value');
         if ($value < 1 || $value > 5) {
-            return $this->json(['error' => 'Invalid rating value. Must be between 1 and 5.'], 400);
+            return $this->json(['error' => 'Note invalide : elle doit être entre 1 et 5.'], 400);
         }
 
         try {

@@ -25,32 +25,76 @@
             --gray-light: #e2e8f0;
             --gray-dark: #334155;
             --sidebar: 260px;
+            --topbar: 64px;
             --radius: 12px;
             --radius-sm: 8px;
         }
-        
-        body { 
+
+        html { background: #0f172a; }
+
+        body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-color: #0f172a;
             color: #e2e8f0;
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
-        .navbar-admin { 
+
+        .navbar-admin {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            height: var(--topbar);
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            padding: 1rem 0;
+            padding: 0;
         }
-        
+
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: #fff;
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 0;
+        }
+
+        .navbar-admin > .container-fluid { flex-wrap: nowrap; }
+
+        .navbar-brand:hover { color: #fff; }
+
+        .sidebar-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: transparent;
+            color: #e2e8f0;
+        }
+
+        .user-menu {
+            color: #e2e8f0;
+            padding: 0.5rem 0.75rem;
+            margin: 0;
+        }
+
+        .user-menu .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
         
         .navbar-brand::before {
@@ -63,22 +107,41 @@
         
         .sidebar {
             width: var(--sidebar);
-            height: calc(100vh - 72px);
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.95);
             position: fixed;
-            top: 72px;
+            top: var(--topbar);
+            bottom: 0;
+            left: 0;
             border-right: 1px solid rgba(148, 163, 184, 0.1);
             backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 2rem 0;
-            overflow-y: auto;   
+            z-index: 1020;
+            padding: 1.5rem 0;
+            overflow-y: auto;
             overflow-x: hidden;
+            transition: transform 0.25s ease;
         }
-        
+
+        .sidebar .nav-link {
+            padding: 0.625rem 1rem;
+            margin: 0.125rem 0.75rem;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: var(--topbar) 0 0 0;
+            background: rgba(2, 6, 23, 0.6);
+            z-index: 1010;
+        }
+
         .sidebar-header {
-            padding: 0 1.5rem 1.5rem;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            margin-bottom: 1rem;
+            padding: 0 1.5rem 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-header.mt-4 {
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
         }
         
         .sidebar-header h6 {
@@ -121,7 +184,8 @@
         .main-content {
             margin-left: var(--sidebar);
             padding: 2rem;
-            min-height: calc(100vh - 72px);
+            min-height: calc(100vh - var(--topbar));
+            min-width: 0;
         }
         
         .page-header {
@@ -146,11 +210,11 @@
             border: 1px solid rgba(148, 163, 184, 0.1);
             border-radius: var(--radius);
             backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         .card:hover {
-            transform: translateY(-2px);
+            border-color: rgba(148, 163, 184, 0.2);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
         
@@ -196,8 +260,63 @@
             border-color: var(--primary);
             color: #fff;
         }
+
+        /* Secondary / cancel buttons share the outline look */
+        .btn-secondary,
+        .btn-outline-secondary,
+        .btn-light {
+            background: transparent;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            color: #cbd5e1;
+        }
+
+        .btn-secondary:hover,
+        .btn-outline-secondary:hover,
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(148, 163, 184, 0.45);
+            color: #fff;
+        }
+
+        /* Semantic buttons: soft tint, solid on hover */
+        .btn-success, .btn-outline-success { --tone: 16, 185, 129;  --tone-text: #34d399; }
+        .btn-danger,  .btn-outline-danger  { --tone: 239, 68, 68;   --tone-text: #f87171; }
+        .btn-warning, .btn-outline-warning { --tone: 245, 158, 11;  --tone-text: #fbbf24; }
+        .btn-info,    .btn-outline-info    { --tone: 56, 189, 248;  --tone-text: #38bdf8; }
+        .btn-outline-primary               { --tone: 99, 102, 241;  --tone-text: #818cf8; }
+
+        .btn-success, .btn-danger, .btn-warning, .btn-info,
+        .btn-outline-success, .btn-outline-danger, .btn-outline-warning,
+        .btn-outline-info, .btn-outline-primary {
+            background: rgba(var(--tone), 0.12);
+            border: 1px solid rgba(var(--tone), 0.3);
+            color: var(--tone-text);
+        }
+
+        .btn-success:hover, .btn-danger:hover, .btn-warning:hover, .btn-info:hover,
+        .btn-outline-success:hover, .btn-outline-danger:hover, .btn-outline-warning:hover,
+        .btn-outline-info:hover, .btn-outline-primary:hover {
+            background: rgb(var(--tone));
+            border-color: rgb(var(--tone));
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
         
         .table {
+            /* Bootstrap 5.3 paints cells with --bs-table-bg (white by default) */
+            --bs-table-bg: transparent;
+            --bs-table-color: #e2e8f0;
+            --bs-table-border-color: rgba(148, 163, 184, 0.1);
+            --bs-table-striped-bg: rgba(148, 163, 184, 0.04);
+            --bs-table-striped-color: #e2e8f0;
+            --bs-table-hover-bg: rgba(99, 102, 241, 0.06);
+            --bs-table-hover-color: #fff;
+            --bs-table-active-bg: rgba(99, 102, 241, 0.1);
+            --bs-table-active-color: #fff;
             color: #e2e8f0;
             margin-bottom: 0;
         }
@@ -230,10 +349,29 @@
         }
         
         .badge {
-            font-weight: 500;
-            padding: 0.375rem 0.75rem;
+            --tone: 148, 163, 184;
+            --tone-text: #cbd5e1;
+            display: inline-block;
+            font-weight: 600;
+            padding: 0.375rem 0.625rem;
             border-radius: 6px;
             font-size: 0.75rem;
+            background: rgba(var(--tone), 0.15);
+            color: var(--tone-text);
+            border: 1px solid rgba(var(--tone), 0.25);
+        }
+
+        /* One soft palette for every status badge (Bootstrap bg-* and app badge-*) */
+        .badge.bg-primary,   .badge-in-progress, .badge-info                    { --tone: 99, 102, 241;  --tone-text: #a5b4fc; }
+        .badge.bg-info                                                          { --tone: 56, 189, 248;  --tone-text: #7dd3fc; }
+        .badge.bg-success,   .badge-finished, .badge-paid, .badge-completed, .badge-active { --tone: 16, 185, 129; --tone-text: #6ee7b7; }
+        .badge.bg-warning,   .badge-pending                                     { --tone: 245, 158, 11;  --tone-text: #fcd34d; }
+        .badge.bg-danger,    .badge-cancelled, .badge-canceled                  { --tone: 239, 68, 68;   --tone-text: #fca5a5; }
+        .badge.bg-secondary, .badge.bg-dark, .badge.bg-light, .badge-inactive   { --tone: 148, 163, 184; --tone-text: #cbd5e1; }
+
+        .badge[class*="bg-"] {
+            background-color: rgba(var(--tone), 0.15) !important;
+            color: var(--tone-text) !important;
         }
         
         .badge-admin {
@@ -257,27 +395,58 @@
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
         
+        /* Stat cards: label on top, white number, accent bar.
+           Works with .number/.label, .h2 + .text-muted and .stat-label markup. */
         .stat-card {
-            text-align: center;
-            padding: 1.5rem;
+            position: relative;
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            gap: 0.375rem;
+            height: calc(100% - 1rem);
+            margin-bottom: 1rem;
+            padding: 1.25rem 1.5rem !important;
+            text-align: left !important;
+            overflow: hidden;
         }
-        
-        .stat-card .number {
-            font-size: 2rem;
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .stat-card > :first-child {
+            margin: 0;
+            font-size: 1.75rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1;
+            line-height: 1.2;
+            color: #fff !important;
+            font-variant-numeric: tabular-nums;
         }
-        
-        .stat-card .label {
-            color: #94a3b8;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
+
+        .stat-card > :last-child:not(:first-child) {
+            margin: 0;
+            color: #94a3b8 !important;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .card > .stat-card { height: 100%; margin-bottom: 0; }
+
+        .row > [class*="col"] > .card:has(> .stat-card) { height: calc(100% - 1rem); margin-bottom: 1rem; }
+        
+        /* Bootstrap muted text is tuned for light backgrounds */
+        .text-muted,
+        .text-secondary,
+        .text-body-secondary {
+            color: #94a3b8 !important;
         }
         
         .dropdown-menu {
@@ -301,58 +470,66 @@
             color: #fff;
         }
         
+        /* Row action icons: same look on every list page */
         .action-btn {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border-radius: var(--radius-sm);
-            background: transparent;
-            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid transparent;
             color: #94a3b8;
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
         
         .action-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            transform: translateY(-1px);
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
         }
         
         .action-btn.view:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
         }
         
-        .action-btn.edit:hover {
-            border-color: var(--warning);
+        .action-btn.edit:hover,
+        .action-btn.block:hover {
+            background: rgba(245, 158, 11, 0.15);
             color: var(--warning);
         }
         
         .action-btn.delete:hover {
-            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.15);
             color: var(--danger);
         }
         
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                border-right: none;
-                border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-                padding: 1rem;
-            }
-            
-            .main-content { 
+        .action-btn.unblock:hover {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        td form { display: inline-flex; margin: 0; }
+        
+        @media (max-width: 991.98px) {
+            .sidebar-toggle { display: inline-flex; }
+
+            .sidebar { transform: translateX(-100%); }
+
+            body.sidebar-open .sidebar { transform: none; }
+
+            body.sidebar-open .sidebar-backdrop { display: block; }
+
+            .main-content {
                 margin-left: 0;
-                padding: 1rem;
+                padding: 1.25rem 1rem;
             }
-            
-            .nav-link {
-                margin: 0.125rem 0;
-            }
+
+            .page-title { font-size: 1.5rem; }
         }
         
         /* Custom scrollbar */
@@ -409,21 +586,44 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-admin">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="{{ path('admin_dashboard') }}">
-                <span>Game Dashboard</span>
-            </a>
+    {% set route = app.request.get('_route') ?? '' %}
+    {% set nav_items = [
+        {route: 'admin_dashboard',        prefix: 'admin_dashboard',  icon: 'fa-chart-line',      label: 'Dashboard'},
+        {route: 'admin_user_index',       prefix: 'admin_user',       icon: 'fa-users',           label: 'Users'},
+        {route: 'admin_product_index',    prefix: 'admin_product',    icon: 'fa-store',           label: 'Products'},
+        {route: 'admin_category_index',   prefix: 'admin_category',   icon: 'fa-tags',            label: 'Categories'},
+        {route: 'admin_payement',         prefix: 'admin_payement',   icon: 'fa-receipt',         label: 'Orders'},
+        {route: 'admin_match_game_index', prefix: 'admin_match_game', icon: 'fa-gamepad',         label: 'Match games'},
+        {route: 'admin_stream_index',     prefix: 'admin_stream',     icon: 'fa-video',           label: 'Streaming'},
+        {route: 'admin_equipe_index',     prefix: 'admin_equipe',     icon: 'fa-people-group',    label: 'Teams'},
+        {route: 'admin_jeu_index',        prefix: 'admin_jeu',        icon: 'fa-dice-d20',        label: 'Games'},
+        {route: 'admin_tournoi_index',    prefix: 'admin_tournoi',    icon: 'fa-trophy',          label: 'Tournois'},
+        {route: 'admin_blog_index',       prefix: 'admin_blog',       icon: 'fa-newspaper',       label: 'Blogs'},
+        {route: 'admin_comment_index',    prefix: 'admin_comment',    icon: 'fa-comment',         label: 'Comments'},
+    ] %}
+
+    <nav class="navbar navbar-admin">
+        <div class="container-fluid px-3 px-lg-4 h-100">
+            <div class="d-flex align-items-center gap-3">
+                <button class="sidebar-toggle" type="button" id="sidebarToggle" aria-label="Ouvrir le menu" aria-controls="adminSidebar" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="{{ path('admin_dashboard') }}">
+                    <span>Game Dashboard</span>
+                </a>
+            </div>
             {% if app.user %}
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-                    <div class="status-indicator status-online"></div>
-                    <span>{{ app.user.nom ?? 'Admin' }}</span>
-                    <i class="fas fa-chevron-down fa-xs"></i>
+                <a class="nav-link user-menu dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="avatar">{{ (app.user.nom ?? 'A')|first|upper }}</span>
+                    <span class="d-none d-sm-inline">{{ app.user.nom ?? 'Admin' }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="{{ path('admin_user_edit', {'id': app.user.id}) }}">
                         <i class="fas fa-user-edit me-2"></i>Edit Profile
+                    </a></li>
+                    <li><a class="dropdown-item" href="/">
+                        <i class="fas fa-globe me-2"></i>Voir le site
                     </a></li>
                     <li><hr class="dropdown-divider my-2"></li>
                     <li><a class="dropdown-item" href="{{ path('app_logout') }}">
@@ -435,118 +635,62 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-2 col-md-3 d-none d-md-block sidebar">
-                <div class="sidebar-header">
-                    <h6>Navigation</h6>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}" 
-                           href="{{ path('admin_dashboard') }}">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_user' in app.request.get('_route') ? 'active' : '' }}" 
-                           href="{{ path('admin_user_index') }}">
-                            <i class="fas fa-users"></i>
-                            <span>Users</span>
-                        </a>
-                    </li>
-                
-                   <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_product_index') }}">
-                            <i class="fas fa-store"></i>
-                            <span>Products</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_category_index') }}">
-                            <i class="fas fa-trophy"></i>
-                            <span>Categories</span>
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_match_game' in app.request.get('_route') ? 'active' : '' }}" href="{{ path('admin_match_game_index') }}">
-                            <i class="fas fa-users"></i>
-                            <span>Match_games</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_stream' in app.request.get('_route') ? 'active' : '' }}" 
-                        href="{{ path('admin_stream_index') }}">
-                        <i class="fas fa-video"></i>
-                          <span>Streaming</span>
-                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_equipe' in app.request.get('_route') ? 'active' : '' }}" href="{{ path('admin_equipe_index') }}">
-                            <i class="fas fa-users"></i>
-                            <span>Teams</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_jeu' in app.request.get('_route') ? 'active' : '' }}" href="{{ path('admin_jeu_index') }}">
-                            <i class="fas fa-gamepad"></i>
-                            <span>Games</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'admin_tournoi' in app.request.get('_route') ? 'active' : '' }}" href="{{ path('admin_tournoi_index') }}">
-                            <i class="fas fa-trophy"></i>
-                            <span>Tournois</span>
-                        </a>
-                    </li>
-                   <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_payement') }}">
-                            <i class="fas fa-trophy"></i>
-                            <span>Orders</span>
-                        </a>
-                    </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_blog_index') }}">
-                            <i class="fas fa-trophy"></i>
-                            <span>Blogs</span>
-                        </a>
-                    </li>
-                                         <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_comment_index') }}">
-                            <i class="fas fa-comment"></i>
-                            <span>Comments</span>
-                        </a>
-                    </li>
-
-                    
-                    <div class="sidebar-header mt-4">
-                        <h6>System</h6>
-                    </div>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-cog"></i>
-                            <span>logout</span>
-                        </a>
-                    </li>
-                    
-                </ul>
-            </div>
-
-            <div class="col-lg-10 col-md-9 main-content">
-                {% block admin_content %}{% endblock %}
-            </div>
-            
+    <aside class="sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <h6>Navigation</h6>
         </div>
-    </div>
-  
-</body>
+        <ul class="nav flex-column">
+            {% for item in nav_items %}
+            <li class="nav-item">
+                <a class="nav-link {{ route starts with item.prefix ? 'active' : '' }}" href="{{ path(item.route) }}">
+                    <i class="fas {{ item.icon }}"></i>
+                    <span>{{ item.label }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
 
-</html>
-{% block javascripts %}
+        <div class="sidebar-header mt-4">
+            <h6>System</h6>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-globe"></i>
+                    <span>Voir le site</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_logout') }}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <main class="main-content">
+        {% block admin_content %}{% endblock %}
+    </main>
+
+    {% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var toggle = document.getElementById('sidebarToggle');
+            var backdrop = document.getElementById('sidebarBackdrop');
+            function setOpen(open) {
+                document.body.classList.toggle('sidebar-open', open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+            toggle.addEventListener('click', function () {
+                setOpen(!document.body.classList.contains('sidebar-open'));
+            });
+            backdrop.addEventListener('click', function () { setOpen(false); });
+        })();
+    </script>
     {% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

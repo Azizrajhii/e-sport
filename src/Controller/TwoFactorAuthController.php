@@ -32,7 +32,7 @@ class TwoFactorAuthController extends AbstractController
             }
 
             if ($user->is2faEnabled()) {
-                $this->addFlash('info', 'Two-factor authentication is already enabled.');
+                $this->addFlash('info', 'L\'authentification à deux facteurs est déjà activée.');
                 return $this->redirectToRoute('app_home');
             }
 
@@ -49,18 +49,18 @@ class TwoFactorAuthController extends AbstractController
                 $csrfToken = $request->request->get('_csrf_token');
                 
                 if (!$this->isCsrfTokenValid('2fa_setup', $csrfToken)) {
-                    $this->addFlash('error', 'Invalid security token. Please try again.');
+                    $this->addFlash('error', 'Jeton de sécurité invalide. Réessaie.');
                 } else {
                     $code = $request->request->get('2fa_code');
                     
                     if (empty($code)) {
-                        $this->addFlash('error', 'Please enter a verification code.');
+                        $this->addFlash('error', 'Entre un code de vérification.');
                     } elseif ($twoFactorAuthService->verifyCode($user, $code)) {
                         $twoFactorAuthService->enable2FA($user);
-                        $this->addFlash('success', 'Two-factor authentication has been enabled!');
+                        $this->addFlash('success', 'Authentification à deux facteurs activée !');
                         return $this->redirectToRoute('app_home');
                     } else {
-                        $this->addFlash('error', 'Invalid verification code. Please try again.');
+                        $this->addFlash('error', 'Code de vérification invalide. Réessaie.');
                     }
                 }
             }
@@ -82,7 +82,7 @@ class TwoFactorAuthController extends AbstractController
                 ]);
             }
             
-            $this->addFlash('error', 'An error occurred while setting up 2FA. Please try again later.');
+            $this->addFlash('error', 'Une erreur est survenue pendant l\'activation de la 2FA. Réessaie plus tard.');
             return $this->redirectToRoute('app_profile');
         }
     }
@@ -98,7 +98,7 @@ class TwoFactorAuthController extends AbstractController
         $session = $request->getSession();
 
         if (!$user instanceof User || !$user->is2faEnabled()) {
-            $this->addFlash('error', 'Invalid request. Please login again.');
+            $this->addFlash('error', 'Requête invalide. Reconnecte-toi.');
             return $this->redirectToRoute('app_login');
         }
 
@@ -117,10 +117,10 @@ class TwoFactorAuthController extends AbstractController
                 $tokenStorage->setToken($token);
                 $session->set('_security_main', serialize($token));
 
-                $this->addFlash('success', 'Two-factor authentication verified successfully!');
+                $this->addFlash('success', 'Authentification à deux facteurs vérifiée !');
                 return $this->redirectToRoute('app_home');
             } else {
-                $this->addFlash('error', 'Invalid verification code. Please try again.');
+                $this->addFlash('error', 'Code de vérification invalide. Réessaie.');
             }
         }
 
@@ -141,7 +141,7 @@ class TwoFactorAuthController extends AbstractController
         }
 
         if (!$user->is2faEnabled()) {
-            $this->addFlash('info', 'Two-factor authentication is not enabled.');
+            $this->addFlash('info', 'L\'authentification à deux facteurs n\'est pas activée.');
             return $this->redirectToRoute('app_home');
         }
 
@@ -150,13 +150,13 @@ class TwoFactorAuthController extends AbstractController
             
             // Verify the password before disabling 2FA
             if (!$passwordHasher->isPasswordValid($user, $password)) {
-                $this->addFlash('error', 'Invalid password. Please try again.');
+                $this->addFlash('error', 'Mot de passe incorrect. Réessaie.');
                 return $this->redirectToRoute('app_2fa_disable');
             }
             
             $twoFactorAuthService->disable2FA($user);
             
-            $this->addFlash('success', 'Two-factor authentication has been disabled.');
+            $this->addFlash('success', 'Authentification à deux facteurs désactivée.');
             return $this->redirectToRoute('app_home');
         }
 

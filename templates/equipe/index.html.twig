@@ -1,9 +1,16 @@
 {# templates/teams/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Esports Teams Hub{% endblock %}
+{% block title %}Centre des équipes — e-Sports.tn{% endblock %}
 
 {% block body %}
+{{ include('components/_page_hero.html.twig', {
+    eyebrow: 'Équipes',
+    icon: 'fa-users',
+    title: 'Centre des équipes',
+    subtitle: 'Crée ton équipe, recrute des joueurs ou rejoins une équipe existante.',
+    image: 'img/web/lan-room.jpg'
+}) }}
 <style>
     /* Hero Section */
     .hero-section {
@@ -33,7 +40,7 @@
         margin-bottom: 10px;
         position: relative;
         display: inline-block;
-        background: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
+        background: linear-gradient(to right, #6366f1, #8b5cf6, #3b82f6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
@@ -116,9 +123,9 @@
     }
 
     .icon-create {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.2));
-        color: #ec4899;
-        box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.2));
+        color: #6366f1;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
     }
 
     .icon-join {
@@ -161,11 +168,6 @@
 
 </style>
 
-<div class="hero-section">
-    <div class="hero-bg"></div>
-    <h1 class="page-title">Team Command Center</h1>
-    <p class="page-subtitle">Manage your esports presence. Create your legacy or join the ranks of the elite.</p>
-</div>
 
 <div class="dashboard-grid" id="cards">
     <!-- Create Team -->
@@ -173,8 +175,8 @@
         <div class="card-icon-wrapper icon-create">
             <i class="fas fa-plus"></i>
         </div>
-        <h2 class="card-title">Create Team</h2>
-        <p class="card-desc">Launch a new squad, recruit members, and register for tournaments.</p>
+        <h2 class="card-title">Créer une équipe</h2>
+        <p class="card-desc">Lance une nouvelle équipe, recrute des membres et inscris-toi aux tournois.</p>
         <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
     </a>
 
@@ -183,8 +185,8 @@
         <div class="card-icon-wrapper icon-join">
             <i class="fas fa-users"></i>
         </div>
-        <h2 class="card-title">Join Team</h2>
-        <p class="card-desc">Browse existing teams, find your community, and start competing.</p>
+        <h2 class="card-title">Rejoindre une équipe</h2>
+        <p class="card-desc">Parcours les équipes existantes, trouve ta communauté et commence à jouer.</p>
         <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
     </a>
 </div>
@@ -201,7 +203,7 @@
         font-weight: 800;
         text-align: center;
         margin-bottom: 10px;
-        background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
+        background: linear-gradient(90deg, #f59e0b, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -280,7 +282,7 @@
         transition: color 0.2s;
     }
     .team-name-cell a:hover {
-        color: #ec4899;
+        color: #6366f1;
     }
     .badge-pill {
         display: inline-block;
@@ -309,7 +311,7 @@
     .ppm-value {
         font-weight: 800;
         font-size: 1.05rem;
-        background: linear-gradient(90deg, #ec4899, #8b5cf6);
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -325,22 +327,22 @@
 </style>
 
 <div class="ranking-section">
-    <h2 class="ranking-title">🏆 Global Ranking</h2>
-    <p class="ranking-subtitle">Teams ranked by Points per Match — fair ranking regardless of matches played</p>
+    <h2 class="ranking-title">🏆 Classement général</h2>
+    <p class="ranking-subtitle">Équipes classées par points par match, quel que soit le nombre de matchs joués</p>
 
     <div class="ranking-table-wrap">
         <table class="ranking-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Team</th>
+                    <th>Équipe</th>
 
                     <th>MJ</th>
                     <th>V</th>
                     <th>N</th>
                     <th>D</th>
-                    <th>GF</th>
-                    <th>GA</th>
+                    <th>BP</th>
+                    <th>BC</th>
                     <th>+/-</th>
                     <th>Pts</th>
                     <th>Pts/M</th>
@@ -374,7 +376,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="11" style="text-align:center;padding:40px;color:#64748b;">No teams yet</td>
+                    <td colspan="11" style="text-align:center;padding:40px;color:#64748b;">Pas encore d'équipe</td>
                 </tr>
                 {% endfor %}
             </tbody>
